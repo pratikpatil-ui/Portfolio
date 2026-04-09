@@ -34,7 +34,11 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(git remote:*)",
-      "Bash(git fetch:*)"
+      "Bash(git fetch:*)",
+      "Bash(npx vercel --version)",
+      "Bash(npx vercel --yes)",
+      "Bash(powershell:*)",
+      "Bash(del \"C:\\Users\\prati\\Desktop\\Portfolio\\components\\flow\\project-architecture.tsx\")"
     ],
     "deny": [],
     "ask": []
