@@ -32,22 +32,37 @@ export function Header() {
   // Detect active section
   useEffect(() => {
     const sections = navigation.map(item => item.href.replace('#', ''))
+    const sectionVisibility = new Map<string, number>()
 
     const observer = new IntersectionObserver(
       (entries) => {
-        // Find the most visible section
-        const visibleEntries = entries.filter(entry => entry.isIntersecting)
-        if (visibleEntries.length > 0) {
-          // Sort by intersection ratio and pick the most visible one
-          const mostVisible = visibleEntries.sort((a, b) =>
-            b.intersectionRatio - a.intersectionRatio
-          )[0]
-          setActiveSection(mostVisible.target.id)
+        // Update visibility map for each entry
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            sectionVisibility.set(entry.target.id, entry.intersectionRatio)
+          } else {
+            sectionVisibility.delete(entry.target.id)
+          }
+        })
+
+        // Find the section with highest visibility
+        let maxRatio = 0
+        let mostVisibleSection = ''
+
+        sectionVisibility.forEach((ratio, id) => {
+          if (ratio > maxRatio) {
+            maxRatio = ratio
+            mostVisibleSection = id
+          }
+        })
+
+        if (mostVisibleSection) {
+          setActiveSection(mostVisibleSection)
         }
       },
       {
-        threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5],
-        rootMargin: '-20% 0px -35% 0px'
+        threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+        rootMargin: '-10% 0px -10% 0px'
       }
     )
 
@@ -82,11 +97,13 @@ export function Header() {
 
           <div className="hidden md:flex items-center space-x-8">
             {navigation.map((item) => {
-              const isActive = activeSection === item.href.replace('#', '')
+              const sectionId = item.href.replace('#', '')
+              const isActive = activeSection === sectionId
               return (
                 <a
                   key={item.name}
                   href={item.href}
+                  onClick={() => setActiveSection(sectionId)}
                   className={cn(
                     "text-sm font-medium transition-colors relative group",
                     isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
