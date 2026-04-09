@@ -30,7 +30,11 @@
       "WebFetch(domain:www.ebaqdesign.com)",
       "Bash(git remote add:*)",
       "Bash(del /f \"C:\\Users\\prati\\Desktop\\Portfolio\\nul\")",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git remote:*)",
+      "Bash(git fetch:*)"
     ],
     "deny": [],
     "ask": []
