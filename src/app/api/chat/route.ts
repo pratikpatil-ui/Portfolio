@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 
 export const runtime = 'edge'
 
@@ -160,7 +160,7 @@ export async function POST(req: Request) {
     })
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY
+  const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY
   if (!apiKey) {
     return new Response(streamFallback(), {
       headers: {
@@ -175,28 +175,22 @@ export async function POST(req: Request) {
   const stream = new ReadableStream({
     async start(controller) {
       try {
-        const client = new Anthropic({ apiKey })
-        const sdkMessages = messages.map((m) => ({
-          role: m.role,
-          content: m.content,
-        }))
-
-        const response = await client.messages.create({
-          model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-5-20250929',
-          max_tokens: 800,
-          system: SYSTEM_PROMPT,
-          messages: sdkMessages,
-          stream: true,
+        const genAI = new GoogleGenerativeAI(apiKey)
+        const model = genAI.getGenerativeModel({
+          model: process.env.GOOGLE_GENERATIVE_AI_MODEL || 'gemini-2.0-flash',
+          systemInstruction: SYSTEM_PROMPT,
+          generationConfig: { maxOutputTokens: 800 },
         })
 
-        for await (const event of response) {
-          if (
-            event.type === 'content_block_delta' &&
-            event.delta.type === 'text_delta' &&
-            event.delta.text
-          ) {
-            controller.enqueue(enc.msg({ text: event.delta.text }))
-          }
+        const contents = messages.map((m) => ({
+          role: m.role === 'assistant' ? 'model' : 'user',
+          parts: [{ text: m.content }],
+        }))
+
+        const result = await model.generateContentStream({ contents })
+        for await (const chunk of result.stream) {
+          const text = chunk.text()
+          if (text) controller.enqueue(enc.msg({ text }))
         }
         controller.enqueue(enc.done())
         controller.close()

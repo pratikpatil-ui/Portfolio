@@ -109,7 +109,7 @@ export function AssistantSheet() {
                 Pratik&apos;s assistant
               </p>
               <p className="font-mono text-[11px] text-[var(--color-fg-subtle)]">
-                Powered by Claude. Knows about Pratik&apos;s work.
+                Powered by Gemini. Knows about Pratik&apos;s work.
               </p>
             </div>
           </div>
