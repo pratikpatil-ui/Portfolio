@@ -42,12 +42,8 @@ export function useAssistant() {
 
       const userMsg: AssistantMessage = { id: id(), role: 'user', content: trimmed }
       const assistantMsg: AssistantMessage = { id: id(), role: 'assistant', content: '' }
-      const history: AssistantMessage[] = []
-      setMessages((prev) => {
-        const next = [...prev, userMsg, assistantMsg]
-        history.push(...prev, userMsg)
-        return next
-      })
+      const historyToSend = [...messages, userMsg]
+      setMessages((prev) => [...prev, userMsg, assistantMsg])
       setStatus('streaming')
 
       const controller = new AbortController()
@@ -58,7 +54,7 @@ export function useAssistant() {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({
-            messages: history.map((m) => ({ role: m.role, content: m.content })),
+            messages: historyToSend.map((m) => ({ role: m.role, content: m.content })),
           }),
           signal: controller.signal,
         })
@@ -129,7 +125,7 @@ export function useAssistant() {
         abortRef.current = null
       }
     },
-    [],
+    [messages],
   )
 
   return { messages, status, error, send, cancel, reset }
