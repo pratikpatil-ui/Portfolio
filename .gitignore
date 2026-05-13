@@ -46,3 +46,7 @@ next-env.d.ts
 
 # local logs
 dev.log
+
+# local reference files (do not commit)
+old_portfolio.pdf
+*.local.pdf
