@@ -24,12 +24,16 @@ function buildGraph(n: number, m: number, seed = 7): { nodes: Node[]; links: Lin
     degree.push(0)
   }
 
+  function inc(arr: number[], i: number) {
+    arr[i] = (arr[i] ?? 0) + 1
+  }
+
   // Seed clique: 3 mutually connected hubs.
   for (let a = 0; a < 3; a++) {
     for (let b = a + 1; b < 3; b++) {
       links.push({ source: a, target: b })
-      degree[a]++
-      degree[b]++
+      inc(degree, a)
+      inc(degree, b)
     }
   }
 
@@ -54,8 +58,8 @@ function buildGraph(n: number, m: number, seed = 7): { nodes: Node[]; links: Lin
       if (target === i || chosen.has(target)) continue
       chosen.add(target)
       links.push({ source: i, target })
-      degree[i] = (degree[i] ?? 0) + 1
-      degree[target] = (degree[target] ?? 0) + 1
+      inc(degree, i)
+      inc(degree, target)
     }
   }
 
@@ -65,11 +69,14 @@ function buildGraph(n: number, m: number, seed = 7): { nodes: Node[]; links: Lin
     const b = Math.floor(rng() * n)
     if (a === b) continue
     links.push({ source: a, target: b })
-    degree[a] = (degree[a] ?? 0) + 1
-    degree[b] = (degree[b] ?? 0) + 1
+    inc(degree, a)
+    inc(degree, b)
   }
 
-  for (let i = 0; i < n; i++) nodes[i]!.degree = degree[i] ?? 0
+  for (let i = 0; i < n; i++) {
+    const node = nodes[i]
+    if (node) node.degree = degree[i] ?? 0
+  }
   return { nodes, links }
 }
 
@@ -112,7 +119,7 @@ export function ForceGraph({ nodeCount = 1000, linkCount = 2400, height = 600 }:
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
     let width = container.clientWidth
     let canvasHeight = height
-    let positions = new Float32Array(N * 2)
+    let positions: Float32Array<ArrayBufferLike> = new Float32Array(N * 2)
     let transform = { x: 0, y: 0, k: 1 }
     let running = !prefersReduced
     let raf = 0
@@ -218,8 +225,8 @@ export function ForceGraph({ nodeCount = 1000, linkCount = 2400, height = 600 }:
     const worker = new Worker(new URL('./force-simulation.worker.ts', import.meta.url), {
       type: 'module',
     })
-    worker.onmessage = (e: MessageEvent<Float32Array>) => {
-      positions = e.data
+    worker.onmessage = (e: MessageEvent) => {
+      positions = e.data as Float32Array
       draw()
     }
     worker.postMessage({

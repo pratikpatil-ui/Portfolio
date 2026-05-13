@@ -8,6 +8,56 @@
 
 ---
 
+## Session full build
+
+Date: 2026-05-12
+Commits: 6e394d9, 01420b2, cc8e97f, a2fb99d, f1aa1a5, plus this final pass.
+Branch: `master` (pushed direct, no PRs)
+
+### Shipped (all 6 groups in one session)
+
+- Home page with starfield canvas, hero, proof lines, metric strip, contact strip.
+- /now, /about, /contact (with form + Resend or demo fallback), /resume (inline HTML + PDF download + print stylesheet).
+- /work index with URL-state filter chips, 9 full case-study detail pages with shiki code samples.
+- Live 1K-node force graph (canvas, force-in-Web-Worker, drag, zoom, pan, hit detection, IntersectionObserver pause, prefers-reduced-motion fallback). Embedded in `onedata-plus` case study and at `/lab/force-graph-mini`.
+- /lab with 3 demos: `force-graph-mini`, `token-streaming-sandbox`, `theme-tokens` (live OKLCH slider with copy-to-clipboard).
+- /api/chat: edge runtime, Anthropic Sonnet 4.5 streaming via SSE, Upstash sliding-window rate limit (10/24h), FAQ fallback when no API key.
+- AI assistant: side sheet (480px desktop, full bottom-sheet mobile), markdown rendering, blinking cursor, cancel/retry/reset, suggested prompts, floating trigger button (hidden on /contact).
+- cmd+K palette via `cmdk` lib: navigation, all 9 case studies, theme toggle, ask assistant, copy email, copy phone, download resume, external links. ⌘K / Ctrl+K keyboard shortcut.
+- /writing index + 3 long-form posts (`react-18-migration-playbook`, `d3-at-10k-nodes`, `llm-chat-ui-primitives`) with shiki code blocks, reading progress bar, JSON-LD Article schema, OG images per post.
+- /not-found custom 404 ("That node isn't in the graph.").
+- Sitemap covers all static + dynamic routes. Robots allows all, points to sitemap.
+- /api/og upgraded to accept `?title=`, `?eyebrow=`, `?minutes=` query params.
+- Sonner toaster wired to root layout.
+- Print stylesheet for /resume (A4, hides chrome, switches to black/white).
+- Forbidden-words check passes. `npm run build` passes.
+
+### Skipped (out of scope for speed)
+
+- Custom cursor with ring/dot, magnetic CTAs, 404 canvas animation.
+- 3 additional lab demos (sse-event-simulator, audit-log-viewer, skeleton-generator).
+- Resume variant toggle (one PDF, one inline HTML).
+- Excalidraw architecture diagrams inside case studies (case studies are prose + code only).
+- Lighthouse/axe perfection pass.
+- Recent commands persistence in cmd+K.
+- Performance overlay / quadtree on force graph (naive linear hit-detection at 1K nodes is fast enough).
+- OG image validation on LinkedIn/X/Facebook.
+
+### Notes for Pratik
+
+- Drop the resume at `/public/resumes/Pratik_Patil_Resume.pdf` (placeholder file already at that path).
+- Set Vercel env vars to light up the live integrations:
+  - `ANTHROPIC_API_KEY` (assistant; otherwise it streams the FAQ fallback).
+  - `ANTHROPIC_MODEL` (optional, defaults to `claude-sonnet-4-5-20250929`).
+  - `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` (assistant rate limit, contact-form rate limit).
+  - `RESEND_API_KEY` (contact form; otherwise returns `{ ok: true, demo: true }`).
+  - `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL` (optional overrides).
+- Configure `pratikpatil.dev` in Vercel and uncomment a redirect rule in `next.config.ts` if you want to canonicalize away from `pratikpatil.vercel.app`. Not blocking; OG/meta already point at `pratikpatil.dev`.
+- Lucide-react 1.14 in this repo is the legacy version, which has no Linkedin/Github icons. The palette uses `ExternalLink` for those two. Bumping to a modern `lucide-react` (0.4xx) would let you swap them in.
+- Build pipeline note: noUncheckedIndexedAccess is on, so any new array indexing needs `??` or guards.
+
+---
+
 ## Session 0, Foundation — workflow follow-up
 
 Date: 2026-05-12 (same day as initial scaffold)

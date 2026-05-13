@@ -20,8 +20,6 @@ import {
   Download,
   Sun,
   Moon,
-  Github,
-  Linkedin,
   ExternalLink,
 } from 'lucide-react'
 import { OPEN_PALETTE_EVENT, openAssistant } from '@/lib/events'
@@ -191,10 +189,10 @@ export function CommandPalette() {
               heading="External"
               className="text-[var(--color-fg-subtle)] [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-[11px] [&_[cmdk-group-heading]]:tracking-widest [&_[cmdk-group-heading]]:uppercase"
             >
-              <Item value="ext-linkedin" onSelect={() => external(SOCIAL.linkedin)} Icon={Linkedin}>
+              <Item value="ext-linkedin" onSelect={() => external(SOCIAL.linkedin)} Icon={ExternalLink}>
                 LinkedIn
               </Item>
-              <Item value="ext-github" onSelect={() => external(SOCIAL.github)} Icon={Github}>
+              <Item value="ext-github" onSelect={() => external(SOCIAL.github)} Icon={ExternalLink}>
                 GitHub
               </Item>
               <Item value="ext-biomaker" onSelect={() => external(SOCIAL.bioMaker)} Icon={ExternalLink}>

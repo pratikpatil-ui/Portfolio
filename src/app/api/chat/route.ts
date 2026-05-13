@@ -4,6 +4,23 @@ export const runtime = 'edge'
 
 type Msg = { role: 'user' | 'assistant'; content: string }
 
+const FORBIDDEN_WORDS_LIST = [
+  'leverage', // allow-forbidden
+  'seamless', // allow-forbidden
+  'robust', // allow-forbidden
+  'comprehensive', // allow-forbidden
+  'holistic', // allow-forbidden
+  'synergy', // allow-forbidden
+  'delve', // allow-forbidden
+  'spearhead', // allow-forbidden
+  'passionate', // allow-forbidden
+  'thrilled', // allow-forbidden
+  'cutting-edge', // allow-forbidden
+  'world-class', // allow-forbidden
+  'game-changer', // allow-forbidden
+  'transformative', // allow-forbidden
+].join(', ')
+
 const SYSTEM_PROMPT = `You are Pratik Patil's portfolio assistant. You answer questions visitors have about Pratik's work, experience, skills, and availability.
 
 Style:
@@ -11,7 +28,7 @@ Style:
 - Specific. Cite real metrics when relevant.
 - Plain English. No corporate filler.
 - Never invent details not in your knowledge.
-- Never use these words: leverage, seamless, robust, comprehensive, holistic, synergy, delve, spearhead, passionate, thrilled, cutting-edge, world-class, game-changer, transformative.
+- Never use these words: ${FORBIDDEN_WORDS_LIST}.
 - Never use em-dashes or en-dashes. Use periods, commas, semicolons, "and", "but".
 
 Knowledge about Pratik:
