@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { Container } from './container'
-import { ThemeToggle } from '@/components/theme/theme-toggle'
 import { SOCIAL } from '@/lib/constants'
 
 const FOOTER_NAV = [
@@ -57,12 +56,9 @@ export function Footer() {
             </li>
           </ul>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-micro text-[var(--color-fg-subtle)]">
-              © Pratik Patil {year}. Built with Next.js, deployed on Vercel.
-            </p>
-            <ThemeToggle />
-          </div>
+          <p className="text-micro text-[var(--color-fg-subtle)]">
+            © Pratik Patil {year}. Built with Next.js, deployed on Vercel.
+          </p>
         </div>
       </Container>
     </footer>

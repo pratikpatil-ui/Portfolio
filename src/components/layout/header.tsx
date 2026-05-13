@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import { Container } from './container'
 import { Logo } from '@/components/brand/logo'
+import { ThemeToggle } from '@/components/theme/theme-toggle'
 import { openPalette } from '@/lib/events'
 
 const NAV = [
@@ -53,7 +54,7 @@ export function Header() {
             </ul>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={openPalette}
@@ -63,9 +64,10 @@ export function Header() {
               <span>{isMac ? '⌘' : 'Ctrl'}</span>
               <span>K</span>
             </button>
+            <ThemeToggle />
             <Link
               href="/resume"
-              className="hidden rounded-[var(--radius-sm)] border border-transparent px-2.5 py-1 text-caption text-[var(--color-fg-muted)] transition-colors hover:border-[var(--color-border)] hover:text-[var(--color-fg)] md:inline-flex"
+              className="hidden rounded-[var(--radius-sm)] border border-[var(--color-accent)] bg-[var(--color-accent)] px-3 py-1 text-caption font-medium text-[var(--color-accent-fg)] transition-opacity hover:opacity-90 md:inline-flex"
             >
               Resume
             </Link>
