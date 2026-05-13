@@ -89,6 +89,27 @@ body {
   }
 }
 
+.shiki-block pre {
+  background: transparent !important;
+}
+.shiki-block code {
+  background: transparent !important;
+  display: block;
+}
+:root[data-theme='dark'] .shiki-block .shiki,
+:root .shiki-block .shiki {
+  color: var(--shiki-dark);
+  background: transparent !important;
+}
+:root[data-theme='dark'] .shiki-block .shiki span,
+:root .shiki-block .shiki span {
+  color: var(--shiki-dark) !important;
+}
+:root[data-theme='light'] .shiki-block .shiki,
+:root[data-theme='light'] .shiki-block .shiki span {
+  color: var(--shiki-light) !important;
+}
+
 @media print {
   header,
   footer,
