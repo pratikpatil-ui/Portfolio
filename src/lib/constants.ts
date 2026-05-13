@@ -9,7 +9,14 @@ export const SOCIAL = {
   linkedin: 'https://www.linkedin.com/in/pratik-patil-ui/',
   github: 'https://github.com/pratikpatil-ui',
   email: 'pratikpatilui@gmail.com',
+  phone: '+1 201-993-4276',
+  bioMaker: 'https://bio-maker-in.vercel.app',
+  tulsee: 'https://github.com/pratikpatil-ui/work-management-collab-tool',
 } as const
+
+export const RESUME_PDF_PATH = '/resumes/Pratik_Patil_Resume.pdf'
+
+export const VISA_CAPTION = 'Authorized to work in US. H1B Transfer required. Available immediately.'
 
 export const ROUTES = [
   '/',

@@ -88,3 +88,32 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+@media print {
+  header,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+  :root {
+    --color-bg: white;
+    --color-fg: black;
+    --color-fg-muted: #222;
+    --color-fg-subtle: #555;
+    --color-surface: white;
+    --color-elevated: white;
+    --color-border: #ddd;
+    --color-border-muted: #eee;
+    --color-accent: #0a5d75;
+  }
+  @page {
+    size: A4;
+    margin: 0.6in;
+  }
+  body {
+    font-size: 11pt;
+    line-height: 1.4;
+    background: white;
+    color: black;
+  }
+}

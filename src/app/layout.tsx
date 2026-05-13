@@ -4,6 +4,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import { ThemeProvider } from '@/components/theme/theme-provider'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
+import { Toaster } from '@/components/layout/toaster'
 import { geistSans, geistMono } from '@/lib/fonts'
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '@/lib/constants'
 import './globals.css'
@@ -61,11 +62,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-[var(--color-bg)] text-[var(--color-fg)]">
+      <body
+        suppressHydrationWarning
+        className="flex min-h-full flex-col bg-[var(--color-bg)] text-[var(--color-fg)]"
+      >
         <ThemeProvider>
           <Header />
           <main className="flex flex-1 flex-col">{children}</main>
           <Footer />
+          <Toaster />
         </ThemeProvider>
         <script
           type="application/ld+json"
