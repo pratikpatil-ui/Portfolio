@@ -23,6 +23,7 @@ import {
   ExternalLink,
 } from 'lucide-react'
 import { OPEN_PALETTE_EVENT, openAssistant } from '@/lib/events'
+import { useBodyScrollLock } from '@/hooks/use-body-scroll-lock'
 import { SOCIAL, RESUME_PDF_PATH } from '@/lib/constants'
 import { caseStudies } from '@/content/case-studies'
 
@@ -39,6 +40,7 @@ const NAV = [
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false)
+  useBodyScrollLock(open)
   const router = useRouter()
   const { setTheme, resolvedTheme } = useTheme()
 

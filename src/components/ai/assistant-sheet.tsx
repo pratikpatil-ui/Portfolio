@@ -5,6 +5,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { X, Send, Square, RotateCcw, Sparkles } from 'lucide-react'
 import { useAssistant } from '@/hooks/use-assistant'
+import { useBodyScrollLock } from '@/hooks/use-body-scroll-lock'
 import { OPEN_ASSISTANT_EVENT } from '@/lib/events'
 
 const SUGGESTIONS = [
@@ -15,6 +16,7 @@ const SUGGESTIONS = [
 
 export function AssistantSheet() {
   const [open, setOpen] = useState(false)
+  useBodyScrollLock(open)
   const { messages, status, send, cancel, reset } = useAssistant()
   const [input, setInput] = useState('')
   const messagesRef = useRef<HTMLDivElement | null>(null)

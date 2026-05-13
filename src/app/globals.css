@@ -73,6 +73,10 @@
   --color-sage-wash: hsl(157 35% 91%);
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 html,
 body {
   background: var(--color-bg);
