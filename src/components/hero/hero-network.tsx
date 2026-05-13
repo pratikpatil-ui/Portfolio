@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useTheme } from 'next-themes'
 
 type Node = { x: number; y: number; vx: number; vy: number; r: number }
@@ -32,9 +32,6 @@ export function HeroNetwork() {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const { resolvedTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => setMounted(true), [])
 
   useEffect(() => {
     const container = containerRef.current
@@ -279,8 +276,6 @@ export function HeroNetwork() {
       document.removeEventListener('visibilitychange', onVisibility)
     }
   }, [resolvedTheme])
-
-  if (!mounted) return null
 
   return (
     <div
