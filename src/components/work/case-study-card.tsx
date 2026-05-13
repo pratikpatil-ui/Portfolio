@@ -22,49 +22,50 @@ export function CaseStudyCard({ data }: { data: CaseStudyTeaser }) {
   return (
     <Link
       href={`/work/${data.slug}`}
-      className="group relative flex h-full flex-col gap-4 overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border-muted)] bg-[var(--color-surface)] p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--color-border)] hover:bg-[var(--color-elevated)]"
+      className="group relative flex h-full min-w-0 flex-col gap-4 overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border-muted)] bg-[var(--color-surface)] p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--color-border)] hover:bg-[var(--color-elevated)]"
     >
-      {/* Hover accent rule across the top */}
       <span
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-[2px] origin-left scale-x-0 bg-[var(--color-accent)] transition-transform duration-300 group-hover:scale-x-100"
       />
 
-      <div className="flex items-center justify-between gap-3">
-        <p className="font-mono text-[11px] tracking-widest text-[var(--color-accent)] uppercase">
+      <div className="flex min-w-0 items-center justify-between gap-3">
+        <p className="truncate font-mono text-[11px] tracking-widest text-[var(--color-accent)] uppercase">
           {data.eyebrow}
         </p>
         {data.featured ? (
-          <span className="inline-flex items-center gap-1.5 font-mono text-[10px] tracking-widest text-[var(--color-fg-subtle)] uppercase">
-            <span
-              aria-hidden
-              className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]"
-            />
+          <span className="inline-flex shrink-0 items-center gap-1.5 font-mono text-[10px] tracking-widest text-[var(--color-fg-subtle)] uppercase">
+            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
             Featured
           </span>
         ) : null}
       </div>
 
-      <div className="flex flex-col gap-2">
-        <h3 className="text-h3 leading-tight text-[var(--color-fg)] transition-colors group-hover:text-[var(--color-accent)]">
+      <div className="flex min-w-0 flex-col gap-2">
+        <h3
+          className="font-display text-[20px] leading-[1.2] font-semibold tracking-tight text-[var(--color-fg)] transition-colors group-hover:text-[var(--color-accent)] line-clamp-2 text-balance"
+          style={{ minHeight: 'calc(20px * 1.2 * 2)' }}
+        >
           {data.title}
         </h3>
-        <p className="text-body text-[var(--color-fg-muted)]">{data.summary}</p>
+        <p className="text-[15px] leading-[1.55] text-[var(--color-fg-muted)] line-clamp-3 text-pretty">
+          {data.summary}
+        </p>
       </div>
 
-      <div className="mt-auto flex flex-col gap-3 pt-2">
-        <dl className="flex flex-col gap-1.5 font-mono text-[11px]">
-          <div className="flex items-baseline gap-2">
-            <dt className="w-12 shrink-0 text-[var(--color-fg-subtle)] uppercase tracking-widest">
+      <div className="mt-auto flex min-w-0 flex-col gap-3 pt-2">
+        <dl className="flex flex-col gap-1 font-mono text-[11px]">
+          <div className="flex min-w-0 items-baseline gap-2">
+            <dt className="w-12 shrink-0 tracking-widest text-[var(--color-fg-subtle)] uppercase">
               Client
             </dt>
-            <dd className="text-[var(--color-fg-muted)]">{data.clientFraming}</dd>
+            <dd className="min-w-0 truncate text-[var(--color-fg-muted)]">{data.clientFraming}</dd>
           </div>
-          <div className="flex items-baseline gap-2">
-            <dt className="w-12 shrink-0 text-[var(--color-fg-subtle)] uppercase tracking-widest">
+          <div className="flex min-w-0 items-baseline gap-2">
+            <dt className="w-12 shrink-0 tracking-widest text-[var(--color-fg-subtle)] uppercase">
               Role
             </dt>
-            <dd className="text-[var(--color-fg-muted)]">{data.role}</dd>
+            <dd className="min-w-0 truncate text-[var(--color-fg-muted)]">{data.role}</dd>
           </div>
         </dl>
 
@@ -81,12 +82,10 @@ export function CaseStudyCard({ data }: { data: CaseStudyTeaser }) {
           </div>
         ) : null}
 
-        <div className="flex items-center justify-end pt-1">
+        <div className="flex items-center justify-end border-t border-[var(--color-border-muted)] pt-3">
           <span className="inline-flex items-center gap-1 font-mono text-[11px] text-[var(--color-fg-subtle)] transition-colors group-hover:text-[var(--color-accent)]">
             Read case study
-            <ArrowUpRight
-              className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-            />
+            <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </span>
         </div>
       </div>

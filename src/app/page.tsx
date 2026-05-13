@@ -7,43 +7,25 @@ import { VisaCaption } from '@/components/home/visa-caption'
 import { TeaserCard } from '@/components/home/teaser-card'
 import { ContactStrip } from '@/components/home/contact-strip'
 import { CaseStudyCard, type CaseStudyTeaser } from '@/components/work/case-study-card'
+import { caseStudies } from '@/content/case-studies'
 import { LinkButton } from '@/components/ui/button'
 import { OpenAssistantButton } from '@/components/ui/open-assistant-button'
 
-const FEATURED: CaseStudyTeaser[] = [
-  {
-    slug: 'chatcdp',
-    eyebrow: 'AI Product UI',
-    title: 'ChatCDP',
-    summary: 'An LLM chat surface that brokerage analysts trust enough to use daily.',
-    clientFraming: 'Tier-1 retail brokerage',
-    role: 'Sole frontend architect',
-    techTags: ['React 18', 'SSE', 'Apache Superset', 'TypeScript'],
+const FEATURED_SLUGS = ['chatcdp', 'onedata-plus', 'modenx'] as const
+
+const FEATURED: CaseStudyTeaser[] = FEATURED_SLUGS.map((slug) => {
+  const c = caseStudies.find((cs) => cs.slug === slug)!
+  return {
+    slug: c.slug,
+    eyebrow: c.eyebrow,
+    title: c.title,
+    summary: c.oneLine,
+    clientFraming: c.clientFraming,
+    role: c.role,
+    techTags: c.stack,
     featured: true,
-  },
-  {
-    slug: 'onedata-plus',
-    eyebrow: 'Data Visualization',
-    title: 'OneDATA.Plus 10K-node graph',
-    summary:
-      'A 10K-node customer network graph that marketing teams actually use to pick outbound targets.',
-    clientFraming: 'Enterprise SaaS, banking compliance',
-    role: 'Sole frontend architect',
-    techTags: ['D3.js', 'Canvas', 'Web Workers', 'React 18'],
-    featured: true,
-  },
-  {
-    slug: 'modenx',
-    eyebrow: 'Mobile',
-    title: 'ModenX',
-    summary:
-      'A React Native retail app shipped to both stores in three months with no prior mobile experience.',
-    clientFraming: 'US retail',
-    role: 'Mobile lead',
-    techTags: ['React Native', 'TypeScript', 'Redux Toolkit'],
-    featured: true,
-  },
-]
+  }
+})
 
 const PROOF_LINES = [
   '28-module React 18 migration in 7 days. TTI 7.2s to 2s.',

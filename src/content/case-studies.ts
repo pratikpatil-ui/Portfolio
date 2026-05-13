@@ -326,7 +326,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: 'onedata-plus',
     eyebrow: 'Data Visualization',
-    title: 'OneDATA.Plus 10K-node graph',
+    title: 'OneDATA.Plus',
     oneLine:
       'A 10K-node customer network graph that marketing teams actually use to pick outbound targets.',
     clientFraming: 'Enterprise SaaS for banking compliance',
@@ -399,7 +399,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: 'react-18-migration',
     eyebrow: 'Platform Engineering',
-    title: 'A 7-day React 18 migration',
+    title: 'React 18 migration',
     oneLine:
       'A seven-day sprint that cut platform Time to Interactive from 7.2 seconds to 2.',
     clientFraming: 'Internal platform migration',
@@ -528,7 +528,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: 'amex-workflow',
     eyebrow: 'Compliance UI',
-    title: 'A workflow surface for compliance ops',
+    title: 'Compliance Workflows',
     oneLine:
       'A React Flow surface that surfaced in-flight customer-data workflows for an Amex compliance ops team.',
     clientFraming: 'Fortune 100 banking client',
@@ -577,7 +577,7 @@ export const caseStudies: CaseStudy[] = [
   {
     slug: 'citizens-marketplace',
     eyebrow: 'Marketplace UI',
-    title: 'A marketplace under a fixed 3-month deadline',
+    title: 'Marketplace UI',
     oneLine:
       'A full marketplace surface delivered end to end in 3 months under a critical client deadline.',
     clientFraming: 'Fortune 100 banking client',
