@@ -43,8 +43,5 @@ next-env.d.ts
 # claude code (local overrides only)
 .claude/settings.local.json
 
-# husky internals (managed by `pnpm prepare`)
-.husky/_
-
 # local logs
 dev.log

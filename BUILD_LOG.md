@@ -8,11 +8,24 @@
 
 ---
 
+## Session 0, Foundation — workflow follow-up
+
+Date: 2026-05-12 (same day as initial scaffold)
+
+Pratik adjusted the workflow after the initial commit and asked to switch tooling:
+
+- **Package manager: npm, not pnpm.** Removed `pnpm-lock.yaml` and `pnpm-workspace.yaml`. Generated `package-lock.json` via `npm install`. Updated `.github/workflows/ci.yml` to use `npm ci` and `actions/setup-node` with `cache: npm`. README and scripts table updated to `npm run …`.
+- **No pre-commit hooks.** Removed husky and lint-staged (devDeps, the `.husky/` directory, the `prepare` script, the `lint-staged` config in `package.json`). Cleared the `core.hooksPath` git config. The `scripts/check-forbidden-words.mjs` script is preserved and can be run manually with `npm run check:words`; CI still runs it on every push.
+- **No PR flow.** Fast-forwarded `master` to `phase-0-foundation`, pushed direct, deleted the feature branch locally and on origin. Going forward, work lands directly on `master` rather than through PRs.
+- **`origin/main` left alone.** Has only an unrelated initial commit from GitHub repo creation. Pratik's real trunk has always been `master`; leaving GitHub's default-branch setting alone unless he says otherwise.
+
+`npm run typecheck`, `npm run lint`, `npm run build`, and `npm run check:words` all pass after the conversion. No code changes outside config — the application itself is unchanged.
+
 ## Session 0, Foundation
 
 Date: 2026-05-12
-Branch: `phase-0-foundation`
-Vercel preview: pending PR (TODO for Pratik below)
+Branch: `phase-0-foundation` (merged to `master` via fast-forward, branch deleted)
+Vercel preview: pending Vercel re-link (TODO for Pratik below)
 
 ### Shipped
 

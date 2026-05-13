@@ -11,29 +11,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: pnpm
+          cache: npm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
       - name: Lint
-        run: pnpm lint
+        run: npm run lint
 
       - name: Typecheck
-        run: pnpm typecheck
+        run: npm run typecheck
 
       - name: Forbidden-words check (source)
-        run: pnpm check:words
+        run: npm run check:words
 
       - name: Build
-        run: pnpm build
+        run: npm run build
 
       - name: Forbidden-words check (built output)
-        run: pnpm check:words
+        run: npm run check:words

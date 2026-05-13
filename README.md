@@ -5,24 +5,24 @@ Personal portfolio of Pratik Patil. Next.js 16, React 19, TypeScript strict, Tai
 ## Local development
 
 ```bash
-pnpm install
-pnpm dev
+npm install
+npm run dev
 ```
 
 Open http://localhost:3000
 
 ## Scripts
 
-| Script              | What it does                                                           |
-| ------------------- | ---------------------------------------------------------------------- |
-| `pnpm dev`          | Run the Next.js dev server with Turbopack                              |
-| `pnpm build`        | Production build                                                       |
-| `pnpm start`        | Serve the production build                                             |
-| `pnpm lint`         | Run ESLint (flat config, type-checked)                                 |
-| `pnpm typecheck`    | Run `tsc --noEmit`                                                     |
-| `pnpm format`       | Run Prettier in write mode                                             |
-| `pnpm format:check` | Run Prettier in check mode                                             |
-| `pnpm check:words`  | Scan source and built output for forbidden words, phrases, and dashes  |
+| Script                  | What it does                                                          |
+| ----------------------- | --------------------------------------------------------------------- |
+| `npm run dev`           | Run the Next.js dev server with Turbopack                             |
+| `npm run build`         | Production build                                                      |
+| `npm start`             | Serve the production build                                            |
+| `npm run lint`          | Run ESLint (flat config, type-checked)                                |
+| `npm run typecheck`     | Run `tsc --noEmit`                                                    |
+| `npm run format`        | Run Prettier in write mode                                            |
+| `npm run format:check`  | Run Prettier in check mode                                            |
+| `npm run check:words`   | Scan source and built output for forbidden words, phrases, and dashes |
 
 ## Code style
 
@@ -30,7 +30,7 @@ Prettier is configured for:
 
 - 100-column line width
 - single quotes
-- no semicolons (relies on ASI; clean reads after a few minutes of acclimation)
+- no semicolons (relies on ASI)
 - trailing commas everywhere
 - Tailwind class sorting via `prettier-plugin-tailwindcss`
 
@@ -38,7 +38,7 @@ ESLint extends `next/core-web-vitals` plus `typescript-eslint/recommended-type-c
 
 ## Forbidden words
 
-A pre-commit hook and a CI step run `scripts/check-forbidden-words.mjs`. It rejects copy that uses any of a banned list of corporate cliches and ornamental punctuation. To allow a single line where the rule does not apply, append `// allow-forbidden` to the end of the line.
+`scripts/check-forbidden-words.mjs` scans source and the built output for banned cliches and decorative dashes. Run it manually with `npm run check:words` before committing. CI runs it on every push.
 
 ## Project structure
 
@@ -52,7 +52,7 @@ src/
   content/              # profile.ts, metrics.ts (single source of truth)
   lib/                  # cn(), constants, fonts
   styles/               # typography.css
-scripts/                # check-forbidden-words.mjs, build utilities
+scripts/                # check-forbidden-words.mjs
 docs/                   # MASTER_PROMPT.md, prompts/, BUILD_LOG.md
 ```
 
@@ -65,7 +65,7 @@ Copy `.env.example` to `.env.local` and fill in values. Required by phase:
 
 ## Phase status
 
-Tracked in `BUILD_LOG.md`. As of this commit: **Session 0 (Foundation) shipped.** Placeholder pages render for every route. Case studies, AI assistant, and content arrive in later sessions.
+Tracked in `BUILD_LOG.md`.
 
 ## Archive
 
