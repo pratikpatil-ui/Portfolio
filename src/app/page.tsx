@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Container } from '@/components/layout/container'
+import { SectionLabel } from '@/components/layout/section-label'
 import { HeroNetwork } from '@/components/hero/hero-network'
 import { MetricStrip } from '@/components/home/metric-strip'
 import { VisaCaption } from '@/components/home/visa-caption'
@@ -101,19 +102,17 @@ export default function HomePage() {
         </p>
       </Container>
 
-      <section className="py-12 sm:py-16">
+      <section className="border-t border-[var(--color-border-muted)] py-12 sm:py-16">
         <Container size="wide">
           <MetricStrip />
         </Container>
       </section>
 
-      <section className="py-12 sm:py-16">
+      <section className="border-t border-[var(--color-border-muted)] py-12 sm:py-16">
         <Container size="wide">
           <div className="mb-8 flex items-end justify-between gap-4">
             <div className="flex flex-col gap-2">
-              <p className="font-mono text-[11px] tracking-widest text-[var(--color-fg-subtle)] uppercase">
-                Selected work
-              </p>
+              <SectionLabel number="01" label="Selected work" />
               <h2 className="text-h2 text-[var(--color-fg)]">Three I would walk through first.</h2>
             </div>
             <Link
@@ -131,16 +130,14 @@ export default function HomePage() {
         </Container>
       </section>
 
-      <section className="py-12 sm:py-16">
+      <section className="border-t border-[var(--color-border-muted)] py-12 sm:py-16">
         <Container size="wide">
+          <div className="mb-8 flex flex-col gap-2">
+            <SectionLabel number="02" label="Live now" />
+            <h2 className="text-h2 text-[var(--color-fg)]">Ask the assistant about Pratik.</h2>
+          </div>
           <div className="rounded-[var(--radius-md)] border-l-4 border-[var(--color-accent)] border-y border-r border-y-[var(--color-border-muted)] border-r-[var(--color-border-muted)] bg-[var(--color-surface)] p-6 sm:p-8">
             <div className="flex flex-col gap-4">
-              <p className="font-mono text-[11px] tracking-widest text-[var(--color-accent)] uppercase">
-                Live now
-              </p>
-              <h2 className="text-h2 text-[var(--color-fg)]">
-                Ask the assistant about Pratik
-              </h2>
               <pre className="overflow-x-auto rounded-[var(--radius-sm)] bg-[var(--color-code-bg)] p-4 font-mono text-[12px] leading-relaxed text-[var(--color-fg-muted)] sm:text-[13px]">
 {`You:        Tell me about his AI work.
 Assistant:  Pratik architected ChatCDP, an LLM chat surface for brokerage
@@ -157,12 +154,10 @@ Assistant:  Pratik architected ChatCDP, an LLM chat surface for brokerage
         </Container>
       </section>
 
-      <section className="py-12 sm:py-16">
+      <section className="border-t border-[var(--color-border-muted)] py-12 sm:py-16">
         <Container size="wide">
           <div className="mb-8 flex flex-col gap-2">
-            <p className="font-mono text-[11px] tracking-widest text-[var(--color-fg-subtle)] uppercase">
-              Lab
-            </p>
+            <SectionLabel number="03" label="Lab" />
             <h2 className="text-h2 text-[var(--color-fg)]">Demos you can poke at.</h2>
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -188,12 +183,10 @@ Assistant:  Pratik architected ChatCDP, an LLM chat surface for brokerage
         </Container>
       </section>
 
-      <section className="py-12 sm:py-16">
+      <section className="border-t border-[var(--color-border-muted)] py-12 sm:py-16">
         <Container size="wide">
           <div className="mb-8 flex flex-col gap-2">
-            <p className="font-mono text-[11px] tracking-widest text-[var(--color-fg-subtle)] uppercase">
-              Writing
-            </p>
+            <SectionLabel number="04" label="Writing" />
             <h2 className="text-h2 text-[var(--color-fg)]">Long-form on the work above.</h2>
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -219,12 +212,13 @@ Assistant:  Pratik architected ChatCDP, an LLM chat surface for brokerage
         </Container>
       </section>
 
-      <section className="py-12 sm:py-16">
+      <section className="border-t border-[var(--color-border-muted)] py-12 sm:py-16">
         <Container size="wide">
+          <div className="mb-6 flex flex-col gap-2">
+            <SectionLabel number="05" label="Now" />
+            <h2 className="text-h2 text-[var(--color-fg)]">What I&apos;m doing right now.</h2>
+          </div>
           <div className="flex flex-col gap-4 rounded-[var(--radius-md)] border border-[var(--color-border-muted)] bg-[var(--color-surface)] p-6">
-            <p className="font-mono text-[11px] tracking-widest text-[var(--color-fg-subtle)] uppercase">
-              Now
-            </p>
             <p className="text-body text-[var(--color-fg-muted)]">
               Job search is the priority. Senior frontend, senior full stack, and AI product UI
               roles in fintech, insurance, and AI products. Building Bio Maker and TULSEE on the
@@ -242,12 +236,10 @@ Assistant:  Pratik architected ChatCDP, an LLM chat surface for brokerage
         </Container>
       </section>
 
-      <section className="py-12 sm:py-16">
+      <section className="border-t border-[var(--color-border-muted)] py-12 sm:py-16">
         <Container size="wide">
           <div className="mb-6 flex flex-col gap-2">
-            <p className="font-mono text-[11px] tracking-widest text-[var(--color-fg-subtle)] uppercase">
-              Get in touch
-            </p>
+            <SectionLabel number="06" label="Contact" />
             <h2 className="text-h2 text-[var(--color-fg)]">Best routes by speed and signal.</h2>
           </div>
           <ContactStrip />
