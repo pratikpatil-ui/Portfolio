@@ -51,9 +51,8 @@ export default function HomePage() {
               I build AI product surfaces that pass bank compliance review.
             </h1>
             <p className="text-body-lg max-w-2xl text-[var(--color-fg-muted)]">
-              Senior software engineer. 7 years shipping React, React Native, and LLM product UIs
-              for Fortune 100 banking, brokerage, and insurance clients. Sole frontend architect at
-              an enterprise SaaS distributed under a Microsoft partnership.
+              Sole frontend architect at a banking-compliance SaaS distributed under a Microsoft
+              partnership. Clients across Fortune 100 banking, brokerage, insurance, and retail.
             </p>
             <ul className="flex flex-col gap-2">
               {PROOF_LINES.map((line) => (
