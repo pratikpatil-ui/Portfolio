@@ -5,6 +5,9 @@ import { ThemeProvider } from '@/components/theme/theme-provider'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { Toaster } from '@/components/layout/toaster'
+import { AssistantSheet } from '@/components/ai/assistant-sheet'
+import { AssistantTrigger } from '@/components/ai/assistant-trigger'
+import { CommandPalette } from '@/components/cmdk/command-palette'
 import { geistSans, geistMono } from '@/lib/fonts'
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '@/lib/constants'
 import './globals.css'
@@ -70,6 +73,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <Header />
           <main className="flex flex-1 flex-col">{children}</main>
           <Footer />
+          <AssistantTrigger />
+          <AssistantSheet />
+          <CommandPalette />
           <Toaster />
         </ThemeProvider>
         <script
