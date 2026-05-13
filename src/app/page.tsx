@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Container } from '@/components/layout/container'
-import { FloatingSceneLazy } from '@/components/hero/floating-scene-lazy'
+import { HeroNetwork } from '@/components/hero/hero-network'
 import { MetricStrip } from '@/components/home/metric-strip'
 import { VisaCaption } from '@/components/home/visa-caption'
 import { TeaserCard } from '@/components/home/teaser-card'
@@ -54,7 +54,7 @@ export default function HomePage() {
   return (
     <>
       <section className="relative isolate overflow-hidden min-h-[80vh] flex items-center">
-        <FloatingSceneLazy />
+        <HeroNetwork />
         <Container size="wide" className="relative z-10 py-20 sm:py-28">
           <div className="flex max-w-3xl flex-col gap-6">
             <h1 className="text-hero text-[var(--color-fg)]">
