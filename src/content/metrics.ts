@@ -1,0 +1,17 @@
+export const metrics = {
+  yearsProduction: 7,
+  reactMigrationModules: 28,
+  reactMigrationDays: 7,
+  ttiBeforeMs: 7200,
+  ttiAfterMs: 2000,
+  d3GraphNodes: 10000,
+  reactNativeMonthsToShip: 3,
+  saasPricingTiers: 4,
+  mobileTeamSize: 5,
+  juniorsMentored: 3,
+  accentureRecords: 1_200_000,
+  accentureCountries: 195,
+  accentureThroughputMultiplier: 4,
+  accentureDataQualityImprovementPct: 96,
+  accentureBidWinsGBP: 330_000,
+} as const
