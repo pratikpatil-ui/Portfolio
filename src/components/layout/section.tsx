@@ -1,10 +1,10 @@
-import { type ElementType, type ReactNode } from 'react'
+import { createElement, type ElementType, type ReactNode } from 'react'
 import { cn } from '@/lib/cn'
 
 export function Section({
   children,
   className,
-  as: Tag = 'section',
+  as = 'section',
   id,
 }: {
   children: ReactNode
@@ -12,9 +12,9 @@ export function Section({
   as?: ElementType
   id?: string
 }) {
-  return (
-    <Tag id={id} className={cn('py-16 sm:py-24', className)}>
-      {children}
-    </Tag>
+  return createElement(
+    as,
+    { id, className: cn('py-16 sm:py-24', className) },
+    children,
   )
 }

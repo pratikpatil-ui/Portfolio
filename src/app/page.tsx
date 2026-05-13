@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Container } from '@/components/layout/container'
-import { Starfield } from '@/components/hero/starfield'
+import { FloatingSceneLazy } from '@/components/hero/floating-scene-lazy'
 import { MetricStrip } from '@/components/home/metric-strip'
 import { VisaCaption } from '@/components/home/visa-caption'
 import { TeaserCard } from '@/components/home/teaser-card'
@@ -54,7 +54,7 @@ export default function HomePage() {
   return (
     <>
       <section className="relative overflow-hidden">
-        <Starfield />
+        <FloatingSceneLazy />
         <Container size="wide" className="py-20 sm:py-28">
           <div className="flex max-w-3xl flex-col gap-6">
             <h1 className="text-hero text-[var(--color-fg)]">
