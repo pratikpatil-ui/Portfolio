@@ -108,6 +108,26 @@ body {
   }
 }
 
+@keyframes logo-cursor-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    opacity: 0;
+  }
+}
+.logo-cursor {
+  animation: logo-cursor-blink 1s steps(1, end) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-cursor {
+    animation: none;
+    opacity: 1;
+  }
+}
+
 .shiki-block pre {
   background: transparent !important;
 }

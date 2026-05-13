@@ -11,30 +11,19 @@ export default function Icon() {
         style={{
           width: '100%',
           height: '100%',
-          background: 'linear-gradient(135deg, #5FCCBA 0%, #3A6B5B 100%)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: '#0F172A',
-          fontSize: 22,
+          background: 'transparent',
+          fontFamily: 'monospace',
           fontWeight: 700,
-          borderRadius: 7,
-          letterSpacing: '-1px',
-          position: 'relative',
+          fontSize: 22,
+          letterSpacing: -1.4,
+          color: '#5FCCBA',
+          lineHeight: 1,
         }}
       >
-        <span style={{ color: '#0F172A', lineHeight: 1 }}>P</span>
-        <span
-          style={{
-            position: 'absolute',
-            right: 5,
-            bottom: 5,
-            width: 4,
-            height: 4,
-            borderRadius: 4,
-            background: '#F2B647',
-          }}
-        />
+        PP
       </div>
     ),
     size,

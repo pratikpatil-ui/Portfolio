@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import { Container } from './container'
-import { Logo } from '@/components/brand/logo'
+import { Logo } from '@/components/layout/Logo'
 import { ThemeToggle } from '@/components/theme/theme-toggle'
 import { openPalette } from '@/lib/events'
 
