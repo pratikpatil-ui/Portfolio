@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import { Container } from './container'
@@ -17,9 +18,15 @@ const NAV = [
   { href: '/contact', label: 'Contact' },
 ]
 
+function isActive(pathname: string, href: string) {
+  if (href === '/') return pathname === '/'
+  return pathname === href || pathname.startsWith(href + '/')
+}
+
 export function Header() {
   const [open, setOpen] = useState(false)
   const [isMac, setIsMac] = useState(false)
+  const pathname = usePathname() ?? '/'
 
   useEffect(() => {
     if (typeof navigator !== 'undefined') {
@@ -41,16 +48,31 @@ export function Header() {
 
           <nav aria-label="Primary" className="hidden md:block">
             <ul className="flex items-center gap-6">
-              {NAV.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className="text-caption text-[var(--color-fg-muted)] transition-colors hover:text-[var(--color-fg)]"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
+              {NAV.map((item) => {
+                const active = isActive(pathname, item.href)
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      aria-current={active ? 'page' : undefined}
+                      className={
+                        'relative text-caption transition-colors ' +
+                        (active
+                          ? 'text-[var(--color-fg)]'
+                          : 'text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]')
+                      }
+                    >
+                      {item.label}
+                      {active ? (
+                        <span
+                          aria-hidden
+                          className="absolute -bottom-[18px] left-0 right-0 h-[2px] bg-[var(--color-accent)]"
+                        />
+                      ) : null}
+                    </Link>
+                  </li>
+                )
+              })}
             </ul>
           </nav>
 
@@ -87,23 +109,41 @@ export function Header() {
         <div className="border-t border-[var(--color-border-muted)] bg-[var(--color-bg)] md:hidden">
           <Container size="wide">
             <ul className="flex flex-col gap-1 py-4">
-              {NAV.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    onClick={() => setOpen(false)}
-                    className="block rounded-[var(--radius-sm)] px-2 py-2 text-body text-[var(--color-fg-muted)] hover:bg-[var(--color-surface)] hover:text-[var(--color-fg)]"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
+              {NAV.map((item) => {
+                const active = isActive(pathname, item.href)
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      onClick={() => setOpen(false)}
+                      aria-current={active ? 'page' : undefined}
+                      className={
+                        'flex items-center gap-2 rounded-[var(--radius-sm)] px-2 py-2 text-body hover:bg-[var(--color-surface)] ' +
+                        (active
+                          ? 'text-[var(--color-fg)]'
+                          : 'text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]')
+                      }
+                    >
+                      {active ? (
+                        <span
+                          aria-hidden
+                          className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]"
+                        />
+                      ) : (
+                        <span aria-hidden className="h-1.5 w-1.5" />
+                      )}
+                      {item.label}
+                    </Link>
+                  </li>
+                )
+              })}
               <li>
                 <Link
                   href="/resume"
                   onClick={() => setOpen(false)}
-                  className="block rounded-[var(--radius-sm)] px-2 py-2 text-body text-[var(--color-fg-muted)] hover:bg-[var(--color-surface)] hover:text-[var(--color-fg)]"
+                  className="flex items-center gap-2 rounded-[var(--radius-sm)] px-2 py-2 text-body text-[var(--color-fg-muted)] hover:bg-[var(--color-surface)] hover:text-[var(--color-fg)]"
                 >
+                  <span aria-hidden className="h-1.5 w-1.5" />
                   Resume
                 </Link>
               </li>

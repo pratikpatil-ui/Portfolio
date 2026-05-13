@@ -16,14 +16,25 @@ export default function Icon() {
           alignItems: 'center',
           justifyContent: 'center',
           color: '#0F172A',
-          fontSize: 18,
+          fontSize: 22,
           fontWeight: 700,
-          borderRadius: 6,
+          borderRadius: 7,
           letterSpacing: '-1px',
+          position: 'relative',
         }}
       >
-        <span style={{ color: '#0F172A' }}>P</span>
-        <span style={{ color: '#F2B647' }}>P</span>
+        <span style={{ color: '#0F172A', lineHeight: 1 }}>P</span>
+        <span
+          style={{
+            position: 'absolute',
+            right: 5,
+            bottom: 5,
+            width: 4,
+            height: 4,
+            borderRadius: 4,
+            background: '#F2B647',
+          }}
+        />
       </div>
     ),
     size,
