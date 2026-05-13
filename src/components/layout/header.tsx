@@ -29,9 +29,9 @@ export function Header() {
   const pathname = usePathname() ?? '/'
 
   useEffect(() => {
-    if (typeof navigator !== 'undefined') {
-      setIsMac(/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent))
-    }
+    // Detect Mac client-side only; the platform string isn't available during SSR.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsMac(/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent))
   }, [])
 
   return (

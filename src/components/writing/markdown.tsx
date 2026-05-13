@@ -12,6 +12,7 @@ async function HighlightedCode({ code, lang }: { code: string; lang: string }) {
   )
 }
 
+// eslint-disable-next-line @typescript-eslint/require-await
 export async function Markdown({ source }: { source: string }) {
   // Pre-render code blocks via shiki, then split markdown into segments.
   const blocks = source.split(/(\n```[\s\S]*?\n```)/g)

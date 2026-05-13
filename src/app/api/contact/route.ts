@@ -55,8 +55,9 @@ ${payload.message}
     body: JSON.stringify({ from, to, subject, text, html, reply_to: payload.email }),
   })
   if (!res.ok) {
-    const data = await res.json().catch(() => ({}))
-    throw new Error(typeof data?.message === 'string' ? data.message : 'Email send failed')
+    const data = (await res.json().catch(() => ({}))) as { message?: unknown }
+    const message = typeof data.message === 'string' ? data.message : 'Email send failed'
+    throw new Error(message)
   }
   return { sent: true }
 }

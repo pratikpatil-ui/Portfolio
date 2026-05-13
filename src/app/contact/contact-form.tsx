@@ -43,8 +43,9 @@ export function ContactForm() {
         body: JSON.stringify(parsed.data),
       })
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        throw new Error(data?.error || `Request failed (${res.status})`)
+        const data = (await res.json().catch(() => ({}))) as { error?: unknown }
+        const errMsg = typeof data.error === 'string' ? data.error : `Request failed (${res.status})`
+        throw new Error(errMsg)
       }
       setSent(true)
       setForm(empty)
@@ -72,7 +73,13 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
+    <form
+      onSubmit={(e) => {
+        void onSubmit(e)
+      }}
+      className="flex flex-col gap-4"
+      noValidate
+    >
       <input
         type="text"
         name="company"

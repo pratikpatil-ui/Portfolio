@@ -139,7 +139,7 @@ async function checkRateLimit(ip: string): Promise<{ ok: boolean; reason?: strin
 export async function POST(req: Request) {
   let body: { messages?: Msg[] } = {}
   try {
-    body = await req.json()
+    body = (await req.json()) as { messages?: Msg[] }
   } catch {
     return new Response(JSON.stringify({ error: 'invalid_json' }), { status: 400 })
   }

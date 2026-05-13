@@ -34,7 +34,7 @@ export function ThemeTokens() {
   }
   function copy() {
     const css = `:root {\n${tokens.map((t) => `  ${t.key}: ${fmt(t)};`).join('\n')}\n}`
-    navigator.clipboard.writeText(css).then(() => toast.success('Copied CSS to clipboard'))
+    void navigator.clipboard.writeText(css).then(() => toast.success('Copied CSS to clipboard'))
   }
 
   return (

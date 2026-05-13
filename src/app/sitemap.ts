@@ -20,7 +20,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const base = STATIC.map((route) => ({
     url: `${SITE_URL}${route === '/' ? '' : route}`,
     lastModified: now,
-    changeFrequency: (route === '/' ? 'weekly' : 'monthly') as 'weekly' | 'monthly',
+    changeFrequency: route === '/' ? ('weekly' as const) : ('monthly' as const),
     priority: route === '/' ? 1 : 0.7,
   }))
   const work = caseStudies.map((c) => ({

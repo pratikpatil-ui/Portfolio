@@ -64,7 +64,7 @@ export function AssistantSheet() {
     if (!t) return
     setInput('')
     userScrolledRef.current = false
-    send(t)
+    void send(t)
   }
 
   function onKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -152,7 +152,7 @@ export function AssistantSheet() {
                     type="button"
                     onClick={() => {
                       setInput('')
-                      send(s)
+                      void send(s)
                     }}
                     className="rounded-[var(--radius-sm)] border border-[var(--color-border-muted)] bg-[var(--color-surface)] px-3 py-2 text-left text-caption text-[var(--color-fg-muted)] hover:border-[var(--color-border)] hover:text-[var(--color-fg)]"
                   >

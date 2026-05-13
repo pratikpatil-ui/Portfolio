@@ -48,7 +48,7 @@ export function HeroNetwork() {
     let width = 0
     let height = 0
     let nodes: Node[] = []
-    let pulses: Pulse[] = []
+    const pulses: Pulse[] = []
     let raf = 0
     let running = true
     let lastPulseAt = 0

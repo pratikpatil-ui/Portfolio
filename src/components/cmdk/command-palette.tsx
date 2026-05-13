@@ -159,7 +159,9 @@ export function CommandPalette() {
               </Item>
               <Item
                 value="copy-email"
-                onSelect={() => copy(SOCIAL.email, 'Email copied')}
+                onSelect={() => {
+                  void copy(SOCIAL.email, 'Email copied')
+                }}
                 Icon={Copy}
                 hint={SOCIAL.email}
               >
@@ -167,7 +169,9 @@ export function CommandPalette() {
               </Item>
               <Item
                 value="copy-phone"
-                onSelect={() => copy(SOCIAL.phone, 'Phone copied')}
+                onSelect={() => {
+                  void copy(SOCIAL.phone, 'Phone copied')
+                }}
                 Icon={Phone}
                 hint={SOCIAL.phone}
               >

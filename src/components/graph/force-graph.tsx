@@ -118,9 +118,9 @@ export function ForceGraph({ nodeCount = 1000, linkCount = 2400, height = 600 }:
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
     let width = container.clientWidth
-    let canvasHeight = height
+    const canvasHeight = height
     let positions: Float32Array<ArrayBufferLike> = new Float32Array(N * 2)
-    let transform = { x: 0, y: 0, k: 1 }
+    const transform = { x: 0, y: 0, k: 1 }
     let running = !prefersReduced
     let raf = 0
     let highlighted: Set<number> | null = null

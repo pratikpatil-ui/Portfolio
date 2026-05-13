@@ -63,8 +63,9 @@ export function useAssistant() {
           throw new Error('You hit the daily message limit. Email me at pratikpatilui@gmail.com.')
         }
         if (!res.ok || !res.body) {
-          const data = await res.json().catch(() => ({}))
-          throw new Error(data?.error || `Request failed (${res.status})`)
+          const data = (await res.json().catch(() => ({}))) as { error?: unknown }
+          const errMsg = typeof data.error === 'string' ? data.error : `Request failed (${res.status})`
+          throw new Error(errMsg)
         }
 
         const reader = res.body.getReader()
