@@ -6,10 +6,10 @@ import { toast } from 'sonner'
 type Token = { name: string; key: string; l: number; c: number; h: number }
 
 const DEFAULTS: Token[] = [
-  { name: 'Background', key: '--color-bg', l: 0.16, c: 0.005, h: 60 },
-  { name: 'Foreground', key: '--color-fg', l: 0.96, c: 0.005, h: 80 },
-  { name: 'Accent', key: '--color-accent', l: 0.78, c: 0.14, h: 200 },
-  { name: 'AI accent', key: '--color-ai', l: 0.82, c: 0.13, h: 75 },
+  { name: 'Background', key: '--color-bg', l: 0.2, c: 0.04, h: 260 },
+  { name: 'Foreground', key: '--color-fg', l: 0.97, c: 0.01, h: 250 },
+  { name: 'Accent', key: '--color-accent', l: 0.75, c: 0.1, h: 175 },
+  { name: 'AI accent', key: '--color-ai', l: 0.8, c: 0.15, h: 80 },
 ]
 
 function fmt(t: Token) {
@@ -52,7 +52,7 @@ export function ThemeTokens() {
                 style={{ background: fmt(t) }}
               />
             </div>
-            <p className="font-mono text-[11px] text-[var(--color-fg-subtle)]">
+            <p className="font-mono text-[11px] break-all text-[var(--color-fg-subtle)]">
               {t.key}: {fmt(t)}
             </p>
             <Slider
@@ -100,21 +100,86 @@ export function ThemeTokens() {
         </button>
       </div>
 
-      <div className="rounded-[var(--radius-md)] border border-[var(--color-border-muted)] bg-[var(--color-surface)] p-5">
-        <p className="font-mono text-[11px] tracking-widest text-[var(--color-fg-subtle)] uppercase">
-          Preview
-        </p>
-        <h3 className="text-h3 pt-2 text-[var(--color-fg)]">A sample card</h3>
-        <p className="text-body text-[var(--color-fg-muted)]">
-          Body text against the current background. Watch the contrast as you move the lightness
-          and chroma sliders.
-        </p>
-        <button
-          type="button"
-          className="mt-3 rounded-[var(--radius-sm)] bg-[var(--color-accent)] px-4 py-1.5 text-caption font-medium text-[var(--color-accent-fg)]"
-        >
-          Primary action
-        </button>
+      {/* Self-contained preview frame. Uses the four overridden tokens directly so every slider has a visible target. */}
+      <div
+        className="overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border)]"
+        style={{ background: 'var(--color-bg)' }}
+      >
+        <div className="flex flex-col gap-5 p-6 sm:p-8">
+          <p
+            className="font-mono text-[11px] tracking-widest uppercase"
+            style={{ color: 'var(--color-fg)', opacity: 0.55 }}
+          >
+            Preview frame
+          </p>
+
+          <div className="flex items-end gap-4">
+            <span
+              className="font-display font-semibold leading-none tabular-nums tracking-tight"
+              style={{ fontSize: 'clamp(40px, 6vw, 64px)', color: 'var(--color-ai)' }}
+            >
+              10K
+            </span>
+            <span
+              className="pb-2 font-mono text-[11px] tracking-widest uppercase"
+              style={{ color: 'var(--color-fg)', opacity: 0.65 }}
+            >
+              AI emphasis
+            </span>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <h3
+              className="font-display text-[24px] leading-tight font-semibold tracking-tight"
+              style={{ color: 'var(--color-fg)' }}
+            >
+              A sample card on the background.
+            </h3>
+            <p
+              className="text-[15px] leading-[1.55]"
+              style={{ color: 'var(--color-fg)', opacity: 0.72 }}
+            >
+              Body text against the live background token. Watch the contrast as you move the
+              lightness slider on the bg, the fg, and the two accents.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3 pt-1">
+            <button
+              type="button"
+              className="rounded-[var(--radius-sm)] px-4 py-1.5 text-caption font-medium"
+              style={{
+                background: 'var(--color-accent)',
+                color: 'var(--color-accent-fg)',
+              }}
+            >
+              Primary action
+            </button>
+            <button
+              type="button"
+              className="rounded-[var(--radius-sm)] border px-4 py-1.5 text-caption"
+              style={{
+                borderColor: 'var(--color-fg)',
+                color: 'var(--color-fg)',
+                opacity: 0.6,
+                background: 'transparent',
+              }}
+            >
+              Ghost
+            </button>
+            <span
+              className="ml-auto inline-flex items-center gap-2 font-mono text-[11px]"
+              style={{ color: 'var(--color-fg)', opacity: 0.55 }}
+            >
+              <span
+                aria-hidden
+                className="inline-block h-2 w-2 rounded-full"
+                style={{ background: 'var(--color-ai)' }}
+              />
+              ai pulse
+            </span>
+          </div>
+        </div>
       </div>
 
       <p className="text-body text-[var(--color-fg-muted)]">
