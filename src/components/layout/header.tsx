@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import { Container } from './container'
+import { Logo } from '@/components/brand/logo'
 import { openPalette } from '@/lib/events'
 
 const NAV = [
@@ -31,9 +32,10 @@ export function Header() {
         <div className="flex h-14 items-center justify-between gap-6">
           <Link
             href="/"
-            className="text-caption font-medium tracking-tight text-[var(--color-fg)] transition-colors hover:text-[var(--color-accent)]"
+            aria-label="Pratik Patil, home"
+            className="inline-flex items-center transition-opacity hover:opacity-80"
           >
-            Pratik Patil
+            <Logo />
           </Link>
 
           <nav aria-label="Primary" className="hidden md:block">

@@ -53,9 +53,9 @@ const PROOF_LINES = [
 export default function HomePage() {
   return (
     <>
-      <section className="relative overflow-hidden">
+      <section className="relative isolate overflow-hidden min-h-[80vh] flex items-center">
         <FloatingSceneLazy />
-        <Container size="wide" className="py-20 sm:py-28">
+        <Container size="wide" className="relative z-10 py-20 sm:py-28">
           <div className="flex max-w-3xl flex-col gap-6">
             <h1 className="text-hero text-[var(--color-fg)]">
               I build AI product surfaces that pass bank compliance review.
