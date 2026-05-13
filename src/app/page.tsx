@@ -40,6 +40,13 @@ export default function HomePage() {
         <HeroNetwork />
         <Container size="wide" className="relative z-10 py-20 sm:py-28">
           <div className="flex max-w-3xl flex-col gap-6">
+            <p className="flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] text-[var(--color-fg-muted)] uppercase">
+              <span
+                aria-hidden
+                className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]"
+              />
+              Pratik Patil — Senior Software Engineer
+            </p>
             <h1 className="text-hero text-[var(--color-fg)]">
               I build AI product surfaces that pass bank compliance review.
             </h1>

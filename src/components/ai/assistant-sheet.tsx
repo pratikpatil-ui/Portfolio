@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { X, Send, Square, RotateCcw } from 'lucide-react'
+import { X, Send, Square, RotateCcw, Sparkles } from 'lucide-react'
 import { useAssistant } from '@/hooks/use-assistant'
 import { OPEN_ASSISTANT_EVENT } from '@/lib/events'
 
@@ -101,8 +101,17 @@ export function AssistantSheet() {
       >
         <header className="flex items-center justify-between gap-3 border-b border-[var(--color-border-muted)] px-4 py-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--color-accent)] font-mono text-[12px] font-medium text-[var(--color-accent-fg)]">
-              PP
+            <div
+              aria-hidden
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-border-muted)]"
+              style={{
+                background: 'color-mix(in oklab, var(--color-ai) 12%, transparent)',
+              }}
+            >
+              <Sparkles
+                className="h-[18px] w-[18px]"
+                style={{ color: 'var(--color-ai)' }}
+              />
             </div>
             <div className="flex flex-col">
               <p className="text-caption font-medium text-[var(--color-fg)]">
