@@ -17,7 +17,7 @@ export function Logo() {
         fontWeight={600}
         fontSize={28}
         letterSpacing={-1.4}
-        fill="var(--color-fg)"
+        fill="var(--color-logo-text)"
       >
         PP
       </text>

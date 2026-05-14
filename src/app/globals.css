@@ -29,6 +29,12 @@
   --color-rust: hsl(12 53% 65%);
   --color-sage-wash: hsl(217 33% 14%);
 
+  /* Logo "PP" wordmark color. Dark theme uses the foreground white so the
+     mark pops on the deep-navy background. Light theme overrides this to
+     deep sage so the wordmark pairs with the gold cursor block instead of
+     reading as plain black on cream. */
+  --color-logo-text: var(--color-fg);
+
   --font-display: 'Geist', system-ui, sans-serif;
   --font-body: 'Geist', system-ui, sans-serif;
   --font-mono: 'Geist Mono', ui-monospace, monospace;
@@ -71,6 +77,8 @@
   --color-copper: hsl(28 48% 65%);
   --color-rust: hsl(12 53% 58%);
   --color-sage-wash: hsl(157 35% 91%);
+
+  --color-logo-text: var(--color-sage-deep);
 }
 
 html {
