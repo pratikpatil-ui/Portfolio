@@ -761,6 +761,7 @@ export const caseStudies: CaseStudy[] = [
       'PostHog',
     ],
     tags: ['Consumer SaaS', 'Side project'],
+    featured: true,
     liveUrl: 'https://bio-maker-in.vercel.app',
     problem: [
       'Indian families build biodata in Word or Photoshop. Most are ugly, inconsistent, and a pain to update. NRI families have the same problem plus the added friction of unfamiliar tools. There was no clean web-first biodata maker with mobile-first responsive forms and client-side PDF export.',

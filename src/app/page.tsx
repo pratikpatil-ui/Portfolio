@@ -11,11 +11,16 @@ import { caseStudies } from '@/content/case-studies'
 import { LinkButton } from '@/components/ui/button'
 import { OpenAssistantButton } from '@/components/ui/open-assistant-button'
 
-const FEATURED_SLUGS = ['chatcdp', 'onedata-plus', 'modenx'] as const
-
-const FEATURED: CaseStudyTeaser[] = FEATURED_SLUGS.map((slug) => {
-  const c = caseStudies.find((cs) => cs.slug === slug)!
-  return {
+// Featured case studies are derived from the data, not a hardcoded list, so
+// flipping `featured: true` on a case study automatically promotes it here.
+// Capped at 3 to keep the home page focused on the strongest evidence.
+const HOMEPAGE_PRIORITY = ['chatcdp', 'onedata-plus', 'modenx', 'chai-edition', 'bio-maker'] as const
+const FEATURED: CaseStudyTeaser[] = HOMEPAGE_PRIORITY.map((slug) =>
+  caseStudies.find((cs) => cs.slug === slug),
+)
+  .filter((cs): cs is NonNullable<typeof cs> => Boolean(cs?.featured))
+  .slice(0, 3)
+  .map((c) => ({
     slug: c.slug,
     eyebrow: c.eyebrow,
     title: c.title,
@@ -24,13 +29,12 @@ const FEATURED: CaseStudyTeaser[] = FEATURED_SLUGS.map((slug) => {
     role: c.role,
     techTags: c.stack,
     featured: true,
-  }
-})
+  }))
 
 const PROOF_LINES = [
   '28-module React 18 migration in 7 days. TTI 7.2s to 2s.',
   '10K-node D3 graph virtualized from a million rows on S3. Click-to-fly 3D viewpoint in the lab.',
-  'LLM chat UI with SSE streaming and embedded BI. Ask the assistant.',
+  'LLM chat UI with SSE streaming and embedded BI. Try the assistant on this page.',
 ]
 
 export default function HomePage() {
@@ -73,9 +77,6 @@ export default function HomePage() {
                 View work
               </LinkButton>
               <OpenAssistantButton variant="secondary">Ask the assistant</OpenAssistantButton>
-              <LinkButton href="/resume" variant="ghost">
-                Download resume
-              </LinkButton>
             </div>
             <VisaCaption className="pt-1" />
           </div>
@@ -107,7 +108,7 @@ export default function HomePage() {
               href="/work"
               className="hidden text-caption text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] sm:inline"
             >
-              All ten case studies →
+              All {caseStudies.length} case studies →
             </Link>
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -206,18 +207,48 @@ Assistant:  Pratik architected ChatCDP, an LLM chat surface for brokerage
             <SectionLabel number="05" label="Now" />
             <h2 className="text-h2 text-[var(--color-fg)]">What I&apos;m doing right now.</h2>
           </div>
-          <div className="flex flex-col gap-4 rounded-[var(--radius-md)] border border-[var(--color-border-muted)] bg-[var(--color-surface)] p-6">
-            <p className="text-body text-[var(--color-fg-muted)]">
-              Job search is the priority. Senior frontend, senior full stack, and AI product UI
-              roles in fintech, insurance, and AI products. Building Bio Maker and TULSEE on the
-              side. Sharpening raw React fundamentals on a 14-day plan.
-            </p>
+          <div className="flex flex-col gap-4 rounded-[var(--radius-md)] border border-[var(--color-border-muted)] bg-[var(--color-surface)] p-6 sm:p-8">
+            <ul className="flex flex-col gap-3">
+              <li className="flex items-start gap-3 text-body text-[var(--color-fg-muted)]">
+                <span
+                  aria-hidden
+                  className="mt-2 inline-block h-1.5 w-1.5 flex-none rounded-full bg-[var(--color-accent)]"
+                />
+                <span>
+                  <strong className="text-[var(--color-fg)]">Job search.</strong> Senior frontend,
+                  senior full stack, and AI product UI roles in fintech, insurance, and AI
+                  products.
+                </span>
+              </li>
+              <li className="flex items-start gap-3 text-body text-[var(--color-fg-muted)]">
+                <span
+                  aria-hidden
+                  className="mt-2 inline-block h-1.5 w-1.5 flex-none rounded-full bg-[var(--color-ai)]"
+                />
+                <span>
+                  <strong className="text-[var(--color-fg)]">Next build: AI agent automation.</strong>{' '}
+                  Treating agents as a real product surface, not a demo. Tool use, retries,
+                  observability, and the boring guardrails that make them trustworthy.
+                </span>
+              </li>
+              <li className="flex items-start gap-3 text-body text-[var(--color-fg-muted)]">
+                <span
+                  aria-hidden
+                  className="mt-2 inline-block h-1.5 w-1.5 flex-none rounded-full bg-[var(--color-fg-subtle)]"
+                />
+                <span>
+                  <strong className="text-[var(--color-fg)]">Side work.</strong> Bio Maker (live
+                  consumer SaaS) and Chai Edition (cinematic editorial). Sharpening raw React
+                  fundamentals on a 14-day plan.
+                </span>
+              </li>
+            </ul>
             <div>
               <Link
                 href="/now"
                 className="text-caption text-[var(--color-accent)] hover:underline"
               >
-                What I&apos;m doing now →
+                Full /now page →
               </Link>
             </div>
           </div>

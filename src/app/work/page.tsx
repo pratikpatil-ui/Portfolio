@@ -47,7 +47,7 @@ export default async function WorkIndexPage({
             <p className="font-mono text-[11px] tracking-widest text-[var(--color-fg-subtle)] uppercase">
               Work
             </p>
-            <h1 className="text-h1 text-[var(--color-fg)]">Ten case studies.</h1>
+            <h1 className="text-h1 text-[var(--color-fg)]">{caseStudies.length} case studies.</h1>
             <p className="text-body-lg max-w-2xl text-[var(--color-fg-muted)]">
               AI product UIs, large-scale data viz, React 18 platform migrations, React Native,
               compliance workflows, multi-tenant marketplaces, and three solo projects.
