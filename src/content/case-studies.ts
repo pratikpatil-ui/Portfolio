@@ -666,6 +666,76 @@ export const caseStudies: CaseStudy[] = [
       'Compliance review cycle cut from weeks to days.',
     ],
     retro: ['Build a config preview tool earlier so non-engineers can iterate without pulling a dev.'],
+    next: 'chai-edition',
+  },
+
+  {
+    slug: 'chai-edition',
+    eyebrow: 'Solo Project (AI-Assisted)',
+    title: 'Chai Edition',
+    oneLine:
+      'A cinematic digital magazine that turns Indian chai culture into a scroll-driven editorial experience.',
+    clientFraming: 'Solo project',
+    role: 'Solo — concept, direction, build, ship',
+    timeline: 'Side project',
+    teamSize: '1',
+    stack: [
+      'React',
+      'Vite',
+      'TypeScript',
+      'Framer Motion',
+      'CSS Modules',
+      'AI Visuals',
+      'GitHub',
+      'Vercel',
+    ],
+    tags: ['Side project', 'AI-Assisted', 'Creative Engineering'],
+    featured: true,
+    liveUrl: 'https://chai-edition.vercel.app',
+    repoUrl: '#',
+    problem: [
+      'I wanted to see how far I could push a portfolio-grade web experience by treating an AI coding assistant like a junior pair, not a magic box. The premise: take something I personally care about — Indian chai culture — and turn it into a scroll-driven cinematic magazine. Every section reads like an edition. A fixed background chai video carries the mood while typography and motion do the storytelling.',
+      'The harder problem was ownership. AI-assisted code is only as good as the product direction behind it. I owned the concept, the naming, the editorial structure, the prompts, the design language, the QA, the GitHub workflow, and the Vercel deployment. Claude Code wrote and debugged the React + TypeScript implementation; GPT helped with content shaping and positioning. The point was to ship something that reads like a deliberate product, not a vibe-coded demo.',
+    ],
+    constraints: [
+      'One person, evenings only.',
+      'Premium Indian luxury visual identity — readable, not garish.',
+      'Scroll-driven storytelling without jank on mid-range mobile.',
+      'AI-generated visuals integrated cleanly, not pasted on top.',
+      'Static, free hosting on Vercel.',
+    ],
+    decisions: [
+      {
+        chose: 'Vite + React + TypeScript with CSS Modules',
+        considered: 'Next.js App Router or Astro',
+        why: 'No SSR or routing needs. A single editorial scroll surface ships faster on Vite, with TypeScript strict on the components and CSS Modules to keep section styles scoped.',
+      },
+      {
+        chose: 'Framer Motion for scroll-driven section transitions',
+        considered: 'Hand-rolled IntersectionObserver and CSS keyframes',
+        why: 'Framer Motion viewport hooks and variants let me prototype editorial motion in minutes. Re-implementing the same primitives by hand would have eaten the project time budget for no creative gain.',
+      },
+      {
+        chose: 'AI-generated stills and short video as production assets, human-owned prompts',
+        considered: 'Stock photography or commissioned illustration',
+        why: 'A solo evening budget cannot pay for chai photography that matches a cinematic editorial look. AI assets, prompted and selected by me, hit the visual bar without compromising the concept.',
+      },
+      {
+        chose: 'A Colophon section that names the AI workflow and human ownership explicitly',
+        considered: 'Saying nothing about the build process',
+        why: 'Hiding the workflow would have undersold the product direction. The Colophon is interview-ready: this is what I owned, this is what AI tools did, this is the seam.',
+      },
+    ],
+    outcomes: [
+      'Shipped live on Vercel with a fixed video background and scroll-driven editorial sections.',
+      'Edition-style structure: cinematic hero, product cards for chai blends, Colophon close.',
+      'Mobile layout holds up — sections breathe, video is throttled appropriately, no horizontal scroll.',
+      'Project doubles as a working answer to "how do you use AI tools as a senior engineer."',
+    ],
+    retro: [
+      'Move the video to an adaptive HLS source. The current MP4 is fine on desktop but heavier than I want on 4G.',
+      'Publish the GitHub repo with a license so the build is fully inspectable, not just the live site.',
+    ],
     next: 'bio-maker',
   },
 

@@ -107,7 +107,7 @@ export default function HomePage() {
               href="/work"
               className="hidden text-caption text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] sm:inline"
             >
-              All nine case studies →
+              All ten case studies →
             </Link>
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
