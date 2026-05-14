@@ -203,15 +203,12 @@ export function ForceGraph({ nodeCount = 1000, linkCount = 2400, height = 640 }:
           controlType="orbit"
           showNavInfo={false}
           nodeRelSize={6}
-          nodeVal={((n: GraphNode) => 1 + Math.sqrt(n.degree) * 1.6) as unknown as Record<string, unknown>}
-          nodeColor={
-            ((n: GraphNode) =>
-              GROUP_COLORS_HEX[n.group] ?? GROUP_COLORS_HEX[0]) as unknown as Record<string, unknown>
-          }
-          nodeLabel={nodeLabel as unknown as Record<string, unknown>}
+          nodeVal={(n: GraphNode) => 1 + Math.sqrt(n.degree) * 1.6}
+          nodeColor={(n: GraphNode) => GROUP_COLORS_HEX[n.group] ?? GROUP_COLORS_HEX[0]}
+          nodeLabel={nodeLabel}
           nodeOpacity={0.95}
           nodeResolution={14}
-          linkColor={(() => 'rgba(246, 193, 144, 0.35)') as unknown as Record<string, unknown>}
+          linkColor={() => 'rgba(246, 193, 144, 0.35)'}
           linkOpacity={0.5}
           linkWidth={0.6}
           enableNodeDrag={true}
@@ -221,7 +218,7 @@ export function ForceGraph({ nodeCount = 1000, linkCount = 2400, height = 640 }:
           cooldownTicks={Infinity}
           d3AlphaDecay={0.022}
           d3VelocityDecay={0.4}
-          onNodeClick={handleNodeClick as unknown as Record<string, unknown>}
+          onNodeClick={handleNodeClick}
         />
       ) : null}
 
