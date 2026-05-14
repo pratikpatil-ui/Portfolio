@@ -1,92 +1,37 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type ComponentType } from 'react'
+import dynamic from 'next/dynamic'
+import { generateUniverse, GROUP_COLORS_HEX } from './universe-data'
 
-type Node = { id: number; degree: number; x?: number; y?: number; fx?: number | null; fy?: number | null }
-type Link = { source: number; target: number }
+// react-force-graph-3d touches `window` at module load time, so it must be
+// dynamically imported with SSR disabled. The library uses generic types that
+// don't flow cleanly through next/dynamic, so we strip the generics at the
+// boundary and rely on our own GraphNode/GraphLink shapes inside.
+const ForceGraph3D = dynamic(() => import('react-force-graph-3d'), {
+  ssr: false,
+  loading: () => null,
+}) as unknown as ComponentType<Record<string, unknown>>
 
-function seededRng(seed: number) {
-  let s = seed >>> 0
-  return () => {
-    s = (s * 1664525 + 1013904223) >>> 0
-    return s / 0xffffffff
-  }
+type ForceGraphRef = {
+  cameraPosition: (
+    pos: Partial<{ x: number; y: number; z: number }>,
+    lookAt?: { x: number; y: number; z: number },
+    transitionMs?: number,
+  ) => void
+  zoomToFit: (transitionMs?: number, padding?: number) => void
 }
 
-function buildGraph(n: number, m: number, seed = 7): { nodes: Node[]; links: Link[] } {
-  const rng = seededRng(seed)
-  const nodes: Node[] = []
-  const links: Link[] = []
-  const degree: number[] = []
-
-  for (let i = 0; i < n; i++) {
-    nodes.push({ id: i, degree: 0 })
-    degree.push(0)
-  }
-
-  function inc(arr: number[], i: number) {
-    arr[i] = (arr[i] ?? 0) + 1
-  }
-
-  // Seed clique: 3 mutually connected hubs.
-  for (let a = 0; a < 3; a++) {
-    for (let b = a + 1; b < 3; b++) {
-      links.push({ source: a, target: b })
-      inc(degree, a)
-      inc(degree, b)
-    }
-  }
-
-  // Preferential attachment: each new node connects to ~3 existing, biased by degree.
-  for (let i = 3; i < n; i++) {
-    const edges = Math.min(3, i)
-    const chosen = new Set<number>()
-    const totalDegree = links.length * 2 || 1
-    let attempts = 0
-    while (chosen.size < edges && attempts < 60) {
-      attempts++
-      const r = rng() * totalDegree
-      let acc = 0
-      let target = i - 1
-      for (let j = 0; j < i; j++) {
-        acc += (degree[j] ?? 0) + 1
-        if (r <= acc) {
-          target = j
-          break
-        }
-      }
-      if (target === i || chosen.has(target)) continue
-      chosen.add(target)
-      links.push({ source: i, target })
-      inc(degree, i)
-      inc(degree, target)
-    }
-  }
-
-  // Extra random edges to bring up edge count.
-  while (links.length < m && links.length < n * 3) {
-    const a = Math.floor(rng() * n)
-    const b = Math.floor(rng() * n)
-    if (a === b) continue
-    links.push({ source: a, target: b })
-    inc(degree, a)
-    inc(degree, b)
-  }
-
-  for (let i = 0; i < n; i++) {
-    const node = nodes[i]
-    if (node) node.degree = degree[i] ?? 0
-  }
-  return { nodes, links }
+type GraphNode = {
+  id: number
+  group: number
+  type: number
+  degree: number
+  x?: number
+  y?: number
+  z?: number
 }
-
-function degreeColor(degree: number, maxDegree: number) {
-  const t = Math.min(1, degree / Math.max(1, maxDegree))
-  const hue = 200 + (75 - 200) * t
-  const light = 0.62 + 0.18 * t
-  const chroma = 0.13
-  return `oklch(${light.toFixed(2)} ${chroma} ${hue.toFixed(0)})`
-}
+type GraphLink = { source: GraphNode; target: GraphNode }
 
 type Props = {
   nodeCount?: number
@@ -94,271 +39,264 @@ type Props = {
   height?: number
 }
 
-export function ForceGraph({ nodeCount = 1000, linkCount = 2400, height = 600 }: Props) {
+const BG_CSS = '#14110d'
+
+// Business-facing labels for the synthetic entity types so the search and
+// tooltip read like a customer data platform, not a graph theory toy.
+function businessLabel(type: number): string {
+  return type === 0 ? 'Organization' : type === 1 ? 'Account' : 'Customer'
+}
+
+export function ForceGraph({ nodeCount = 1000, linkCount = 2400, height = 640 }: Props) {
+  const dataset = useMemo(() => generateUniverse(nodeCount, linkCount, 42), [nodeCount, linkCount])
+
+  const graphData = useMemo(() => {
+    const nodes: GraphNode[] = []
+    for (let i = 0; i < dataset.n; i++) {
+      nodes.push({
+        id: i,
+        group: dataset.group[i] ?? 0,
+        type: dataset.type[i] ?? 2,
+        degree: dataset.degree[i] ?? 0,
+      })
+    }
+    // Pre-resolve link source/target to the actual node references rather
+    // than numeric ids. The library otherwise re-resolves on every reheat
+    // (which happens on every drag), and a transient unresolved state during
+    // a reheat is what causes the "reading 'x'" error when the tick reads
+    // link.source.x on a node that was momentarily undefined.
+    const links: GraphLink[] = []
+    for (let i = 0; i < dataset.m; i++) {
+      const s = nodes[dataset.linkSource[i] ?? 0]
+      const t = nodes[dataset.linkTarget[i] ?? 0]
+      if (s && t) links.push({ source: s, target: t })
+    }
+    return { nodes, links }
+  }, [dataset])
+
+  // ResizeObserver feeds explicit dimensions into ForceGraph3D, which would
+  // otherwise default to the full window.
   const containerRef = useRef<HTMLDivElement | null>(null)
-  const canvasRef = useRef<HTMLCanvasElement | null>(null)
-  const [paused, setPaused] = useState(false)
-  const [hubCount, setHubCount] = useState(0)
-
+  const [size, setSize] = useState<{ w: number; h: number }>({ w: 0, h: 0 })
   useEffect(() => {
-    const container = containerRef.current
-    const canvas = canvasRef.current
-    if (!container || !canvas) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    const isMobile = window.innerWidth < 720
-    const N = isMobile ? Math.min(500, nodeCount) : nodeCount
-    const M = isMobile ? Math.floor(linkCount * 0.5) : linkCount
-
-    const { nodes, links } = buildGraph(N, M)
-    const maxDegree = nodes.reduce((m, n) => Math.max(m, n.degree), 1)
-    setHubCount(nodes.filter((n) => n.degree > Math.max(6, maxDegree * 0.4)).length)
-
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const dpr = Math.min(window.devicePixelRatio || 1, 2)
-    let width = container.clientWidth
-    const canvasHeight = height
-    let positions: Float32Array<ArrayBufferLike> = new Float32Array(N * 2)
-    const transform = { x: 0, y: 0, k: 1 }
-    let running = !prefersReduced
-    let raf = 0
-    let highlighted: Set<number> | null = null
-    let dragging: number | null = null
-    let pointerDown = false
-    let lastPan: { x: number; y: number } | null = null
-
-    function resize() {
-      if (!canvas || !container) return
-      width = container.clientWidth
-      canvas.width = Math.floor(width * dpr)
-      canvas.height = Math.floor(canvasHeight * dpr)
-      canvas.style.width = `${width}px`
-      canvas.style.height = `${canvasHeight}px`
-      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0)
-      transform.x = width / 2
-      transform.y = canvasHeight / 2
-    }
-
-    function draw() {
-      if (!ctx) return
-      ctx.save()
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-      ctx.clearRect(0, 0, width, canvasHeight)
-      ctx.translate(transform.x, transform.y)
-      ctx.scale(transform.k, transform.k)
-
-      // edges
-      ctx.lineWidth = 0.6 / transform.k
-      ctx.strokeStyle = 'oklch(0.30 0.010 60 / 0.18)'
-      ctx.beginPath()
-      for (const link of links) {
-        const ax = positions[link.source * 2]
-        const ay = positions[link.source * 2 + 1]
-        const bx = positions[link.target * 2]
-        const by = positions[link.target * 2 + 1]
-        if (ax === undefined || ay === undefined || bx === undefined || by === undefined) continue
-        if (highlighted && !(highlighted.has(link.source) && highlighted.has(link.target))) continue
-        ctx.moveTo(ax, ay)
-        ctx.lineTo(bx, by)
-      }
-      ctx.stroke()
-
-      // nodes
-      for (let i = 0; i < N; i++) {
-        const x = positions[i * 2]
-        const y = positions[i * 2 + 1]
-        if (x === undefined || y === undefined) continue
-        const node = nodes[i]!
-        const r = Math.max(2, Math.min(8, 2 + Math.sqrt(node.degree)))
-        const dimmed = highlighted && !highlighted.has(i)
-        ctx.beginPath()
-        ctx.arc(x, y, r, 0, Math.PI * 2)
-        ctx.fillStyle = dimmed
-          ? 'oklch(0.55 0.008 80 / 0.25)'
-          : degreeColor(node.degree, maxDegree)
-        ctx.fill()
-      }
-
-      ctx.restore()
-    }
-
-    function screenToWorld(px: number, py: number) {
-      return {
-        x: (px - transform.x) / transform.k,
-        y: (py - transform.y) / transform.k,
-      }
-    }
-
-    function hit(px: number, py: number): number | null {
-      const { x, y } = screenToWorld(px, py)
-      const tol = 6 / transform.k
-      let best: { i: number; d2: number } | null = null
-      for (let i = 0; i < N; i++) {
-        const nx = positions[i * 2]
-        const ny = positions[i * 2 + 1]
-        if (nx === undefined || ny === undefined) continue
-        const dx = nx - x
-        const dy = ny - y
-        const d2 = dx * dx + dy * dy
-        if (d2 < tol * tol && (!best || d2 < best.d2)) best = { i, d2 }
-      }
-      return best?.i ?? null
-    }
-
-    function highlightNeighbors(id: number) {
-      const adj = new Map<number, number[]>()
-      for (const l of links) {
-        if (!adj.has(l.source)) adj.set(l.source, [])
-        if (!adj.has(l.target)) adj.set(l.target, [])
-        adj.get(l.source)!.push(l.target)
-        adj.get(l.target)!.push(l.source)
-      }
-      const set = new Set<number>([id])
-      for (const n of adj.get(id) ?? []) {
-        set.add(n)
-        for (const nn of adj.get(n) ?? []) set.add(nn)
-      }
-      highlighted = set
-    }
-
-    const worker = new Worker(new URL('./force-simulation.worker.ts', import.meta.url), {
-      type: 'module',
+    const el = containerRef.current
+    if (!el) return
+    const ro = new ResizeObserver((entries) => {
+      const entry = entries[0]
+      if (!entry) return
+      const { width, height: h } = entry.contentRect
+      setSize({ w: Math.floor(width), h: Math.floor(h) })
     })
-    worker.onmessage = (e: MessageEvent) => {
-      positions = e.data as Float32Array
-      draw()
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
+
+  const fgRef = useRef<ForceGraphRef | null>(null)
+
+  // Frame the whole universe in the camera once after the warmup ticks have
+  // largely settled the layout. zoomToFit walks the bounding box and animates
+  // the camera to fit, which is the structured first impression vasturiano
+  // demos rely on.
+  useEffect(() => {
+    if (size.w === 0 || size.h === 0) return
+    const t1 = window.setTimeout(() => {
+      fgRef.current?.zoomToFit(2200, 120)
+    }, 600)
+    return () => window.clearTimeout(t1)
+  }, [size.w, size.h, graphData])
+
+  // Camera fly to a clicked node. Camera lands along the radial vector from
+  // origin through the node so the rest of the universe spreads out behind
+  // it. Exact pattern from the vasturiano onNodeClick example.
+  function handleNodeClick(node: GraphNode | null | undefined) {
+    // The library can pass null / undefined during transient states (a node
+    // being removed under a click, or a hot-reload race). Bail before reading
+    // position fields, since `node.x` on `undefined` throws.
+    if (!node || typeof node !== 'object') return
+    const distance = 50
+    const x = node.x ?? 0
+    const y = node.y ?? 0
+    const z = node.z ?? 0
+    const len = Math.hypot(x, y, z)
+    const distRatio = 1 + distance / (len || 1)
+    const newPos =
+      x || y || z
+        ? { x: x * distRatio, y: y * distRatio, z: z * distRatio }
+        : { x: 0, y: 0, z: distance }
+    fgRef.current?.cameraPosition(newPos, { x, y, z }, 1500)
+  }
+
+  // Hover tooltip body. Uses the same cluster color as the node sphere so the
+  // analyst can match the tooltip back to the segment they are looking at.
+  function nodeLabel(node: GraphNode | null | undefined): string {
+    if (!node || typeof node !== 'object') return ''
+    const businessType = businessLabel(node.type)
+    const color = GROUP_COLORS_HEX[node.group] ?? GROUP_COLORS_HEX[0]
+    return `
+      <div style="
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 11px;
+        line-height: 1.5;
+        padding: 8px 10px;
+        border: 1px solid #3a2a1c;
+        background: rgba(26, 20, 16, 0.96);
+        color: #e7c693;
+        border-radius: 6px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      ">
+        <div style="display: flex; align-items: center; gap: 6px; color: #f3c969; letter-spacing: 0.08em; text-transform: uppercase; font-size: 10px;">
+          <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${color}; box-shadow: 0 0 6px ${color};"></span>
+          ${businessType} #${node.id}
+        </div>
+        <div style="color: #c9a978; margin-top: 4px;">
+          ${node.degree} connections &middot; segment ${node.group}
+        </div>
+      </div>
+    `
+  }
+
+  // Search state.
+  const [searchQuery, setSearchQuery] = useState('')
+  const [showResults, setShowResults] = useState(false)
+
+  const searchResults = useMemo<GraphNode[]>(() => {
+    const q = searchQuery.trim().toLowerCase()
+    if (!q) return []
+    const matches: GraphNode[] = []
+    for (const n of graphData.nodes) {
+      const idStr = String(n.id)
+      const typeName = businessLabel(n.type).toLowerCase()
+      const segLabel = `segment ${n.group}`
+      if (idStr.includes(q) || typeName.startsWith(q) || segLabel.includes(q)) {
+        matches.push(n)
+      }
     }
-    worker.postMessage({
-      type: 'init',
-      nodes: nodes.map((n) => ({ id: n.id, degree: n.degree })),
-      links: links.map((l) => ({ source: l.source, target: l.target })),
-      ticks: 220,
+    matches.sort((a, b) => {
+      const aExact = String(a.id) === q ? 0 : 1
+      const bExact = String(b.id) === q ? 0 : 1
+      if (aExact !== bExact) return aExact - bExact
+      // Then by degree desc so the most-connected matches surface first.
+      return b.degree - a.degree
     })
+    return matches.slice(0, 8)
+  }, [searchQuery, graphData])
 
-    function loop() {
-      if (running && !document.hidden && !paused) {
-        worker.postMessage({ type: 'tick' })
-      }
-      raf = requestAnimationFrame(loop)
-    }
-
-    function onPointerDown(e: PointerEvent) {
-      const rect = canvas!.getBoundingClientRect()
-      const px = e.clientX - rect.left
-      const py = e.clientY - rect.top
-      const id = hit(px, py)
-      pointerDown = true
-      canvas!.setPointerCapture(e.pointerId)
-      if (id !== null) {
-        dragging = id
-        const w = screenToWorld(px, py)
-        worker.postMessage({ type: 'drag', id, x: w.x, y: w.y })
-      } else {
-        lastPan = { x: e.clientX, y: e.clientY }
-      }
-    }
-    function onPointerMove(e: PointerEvent) {
-      if (!pointerDown) return
-      const rect = canvas!.getBoundingClientRect()
-      const px = e.clientX - rect.left
-      const py = e.clientY - rect.top
-      if (dragging !== null) {
-        const w = screenToWorld(px, py)
-        worker.postMessage({ type: 'drag', id: dragging, x: w.x, y: w.y })
-      } else if (lastPan) {
-        transform.x += e.clientX - lastPan.x
-        transform.y += e.clientY - lastPan.y
-        lastPan = { x: e.clientX, y: e.clientY }
-        draw()
-      }
-    }
-    function onPointerUp(e: PointerEvent) {
-      pointerDown = false
-      canvas!.releasePointerCapture(e.pointerId)
-      if (dragging !== null) {
-        worker.postMessage({ type: 'release', id: dragging })
-        dragging = null
-      }
-      lastPan = null
-    }
-    function onClick(e: MouseEvent) {
-      const rect = canvas!.getBoundingClientRect()
-      const id = hit(e.clientX - rect.left, e.clientY - rect.top)
-      if (id !== null) {
-        highlightNeighbors(id)
-      } else {
-        highlighted = null
-      }
-      draw()
-    }
-    function onWheel(e: WheelEvent) {
-      e.preventDefault()
-      const rect = canvas!.getBoundingClientRect()
-      const px = e.clientX - rect.left
-      const py = e.clientY - rect.top
-      const world = screenToWorld(px, py)
-      const factor = Math.exp(-e.deltaY * 0.001)
-      const next = Math.max(0.3, Math.min(4, transform.k * factor))
-      transform.k = next
-      transform.x = px - world.x * next
-      transform.y = py - world.y * next
-      draw()
-    }
-
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        running = entry?.isIntersecting === true && !prefersReduced
-      },
-      { threshold: 0.05 },
-    )
-    io.observe(container)
-
-    resize()
-    window.addEventListener('resize', resize)
-    canvas.addEventListener('pointerdown', onPointerDown)
-    canvas.addEventListener('pointermove', onPointerMove)
-    canvas.addEventListener('pointerup', onPointerUp)
-    canvas.addEventListener('pointercancel', onPointerUp)
-    canvas.addEventListener('click', onClick)
-    canvas.addEventListener('wheel', onWheel, { passive: false })
-    raf = requestAnimationFrame(loop)
-
-    return () => {
-      running = false
-      cancelAnimationFrame(raf)
-      worker.terminate()
-      io.disconnect()
-      window.removeEventListener('resize', resize)
-      canvas.removeEventListener('pointerdown', onPointerDown)
-      canvas.removeEventListener('pointermove', onPointerMove)
-      canvas.removeEventListener('pointerup', onPointerUp)
-      canvas.removeEventListener('pointercancel', onPointerUp)
-      canvas.removeEventListener('click', onClick)
-      canvas.removeEventListener('wheel', onWheel)
-    }
-  }, [nodeCount, linkCount, height, paused])
+  function handleSearchSelect(node: GraphNode) {
+    setSearchQuery('')
+    setShowResults(false)
+    handleNodeClick(node)
+  }
 
   return (
     <div
       ref={containerRef}
-      className="relative overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border-muted)] bg-[var(--color-surface)]"
-      style={{ height }}
+      className="relative overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border-muted)]"
+      style={{ height, background: BG_CSS }}
     >
-      <canvas ref={canvasRef} className="block cursor-grab touch-none active:cursor-grabbing" />
-      <div className="pointer-events-none absolute top-3 left-3 flex flex-col gap-1 font-mono text-[11px] text-[var(--color-fg-subtle)]">
-        <span>nodes: {nodeCount.toLocaleString()}</span>
-        <span>hubs: {hubCount}</span>
-        <span>scroll to zoom · drag to pan or pull a node</span>
+      {size.w > 0 && size.h > 0 ? (
+        <ForceGraph3D
+          ref={fgRef}
+          width={size.w}
+          height={size.h}
+          graphData={graphData}
+          backgroundColor={BG_CSS}
+          controlType="orbit"
+          showNavInfo={false}
+          nodeRelSize={6}
+          nodeVal={((n: GraphNode) => 1 + Math.sqrt(n.degree) * 1.6) as unknown as Record<string, unknown>}
+          nodeColor={
+            ((n: GraphNode) =>
+              GROUP_COLORS_HEX[n.group] ?? GROUP_COLORS_HEX[0]) as unknown as Record<string, unknown>
+          }
+          nodeLabel={nodeLabel as unknown as Record<string, unknown>}
+          nodeOpacity={0.95}
+          nodeResolution={14}
+          linkColor={(() => 'rgba(246, 193, 144, 0.35)') as unknown as Record<string, unknown>}
+          linkOpacity={0.5}
+          linkWidth={0.6}
+          enableNodeDrag={true}
+          enableNavigationControls={true}
+          enablePointerInteraction={true}
+          warmupTicks={150}
+          cooldownTicks={Infinity}
+          d3AlphaDecay={0.022}
+          d3VelocityDecay={0.4}
+          onNodeClick={handleNodeClick as unknown as Record<string, unknown>}
+        />
+      ) : null}
+
+      {/* Search bar replaces the old stats line. Typing a customer id, a type
+        name like "customer" or "account", or "segment N" surfaces matches
+        ranked by exact-id-match then degree. Enter or click flies the camera
+        to the chosen node. */}
+      <div className="absolute top-3 left-3 z-10 w-[min(440px,calc(100%-1.5rem))]">
+        <div className="relative">
+          <input
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value)
+              setShowResults(true)
+            }}
+            onFocus={() => setShowResults(true)}
+            onBlur={() => window.setTimeout(() => setShowResults(false), 150)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && searchResults[0]) {
+                e.preventDefault()
+                handleSearchSelect(searchResults[0])
+              } else if (e.key === 'Escape') {
+                setShowResults(false)
+                e.currentTarget.blur()
+              }
+            }}
+            placeholder="Search customer id, type (organization / account / customer), or segment"
+            aria-label="Search the customer graph"
+            className="w-full rounded-[var(--radius-sm)] border border-[#3a2a1c] bg-[#1a1410]/90 px-3 py-2 font-mono text-[12px] text-[#e7c693] placeholder:text-[#5f4632] focus:border-[#f3c969] focus:outline-none"
+          />
+          {showResults && searchQuery.trim() && (
+            <div className="absolute top-full right-0 left-0 mt-1 overflow-hidden rounded-[var(--radius-sm)] border border-[#3a2a1c] bg-[#1a1410]/96 shadow-lg backdrop-blur">
+              {searchResults.length > 0 ? (
+                <ul>
+                  {searchResults.map((n) => {
+                    const color = GROUP_COLORS_HEX[n.group] ?? GROUP_COLORS_HEX[0]!
+                    return (
+                      <li
+                        key={n.id}
+                        onMouseDown={(e) => {
+                          e.preventDefault()
+                          handleSearchSelect(n)
+                        }}
+                        className="flex cursor-pointer items-center gap-2 px-3 py-1.5 font-mono text-[11px] text-[#c9a978] hover:bg-[#231711] hover:text-[#f3c969]"
+                      >
+                        <span
+                          aria-hidden
+                          style={{ background: color, boxShadow: `0 0 6px ${color}` }}
+                          className="inline-block h-2 w-2 shrink-0 rounded-full"
+                        />
+                        <span className="text-[#f3c969]">
+                          {businessLabel(n.type)} #{n.id}
+                        </span>
+                        <span className="text-[#5f4632]">·</span>
+                        <span>{n.degree} connections</span>
+                        <span className="text-[#5f4632]">·</span>
+                        <span>segment {n.group}</span>
+                      </li>
+                    )
+                  })}
+                </ul>
+              ) : (
+                <div className="px-3 py-2 font-mono text-[11px] text-[#9c7c5a]">
+                  No matches for &quot;{searchQuery}&quot;
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
-      <div className="absolute top-3 right-3 flex gap-2">
-        <button
-          type="button"
-          onClick={() => setPaused((v) => !v)}
-          className="rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-bg)]/70 px-2 py-1 font-mono text-[11px] text-[var(--color-fg-muted)] hover:text-[var(--color-fg)]"
-        >
-          {paused ? 'Resume' : 'Pause'}
-        </button>
+
+      {/* Compact help text at the bottom. */}
+      <div className="pointer-events-none absolute bottom-3 left-3 max-w-[calc(100%-1.5rem)] font-mono text-[10px] text-[#9c7c5a]">
+        hover for details · click a node to fly in · drag a node to pull it · drag empty space to
+        orbit · scroll to zoom
       </div>
     </div>
   )

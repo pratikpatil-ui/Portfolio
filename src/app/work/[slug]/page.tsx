@@ -20,7 +20,7 @@ export async function generateMetadata({
   const { slug } = await params
   const cs = getCaseStudy(slug)
   if (!cs) return { title: 'Case study' }
-  const ogUrl = `/api/og?title=${encodeURIComponent(cs.title)}&eyebrow=${encodeURIComponent(cs.eyebrow)}`
+  const ogUrl = `/api/og?title=${encodeURIComponent(cs.title)}&eyebrow=${encodeURIComponent(cs.eyebrow)}&subtitle=${encodeURIComponent(cs.oneLine)}`
   return {
     title: cs.title,
     description: cs.oneLine,
@@ -158,12 +158,18 @@ export default async function CaseStudyPage({
           {cs.liveDemo === 'force-graph' ? (
             <section className="flex flex-col gap-3">
               <h2 className="text-h3 text-[var(--color-fg)]">Live demo</h2>
+              <ForceGraph nodeCount={1000} linkCount={2400} height={620} />
               <p className="text-body text-[var(--color-fg-muted)]">
-                Production version renders 10K nodes against live S3 streams in a regulated banking
-                SaaS. This is a 1K-node sanitized recreation, same rendering pipeline, same
-                force-in-worker architecture.
+                Full 3D force simulation (d3-force-3d) in a Web Worker, rendered with Three.js as
+                instanced spheres plus additive line edges and halo billboards on hubs. The layout
+                starts from a singularity and explodes outward; color identifies one of ten
+                connected clusters, so the universe reads as a galaxy of communities once it
+                cools. 1,000 entities here for a responsive demo. The production banking SaaS uses
+                the same force-in-worker pipeline against a million-row customer dataset on S3 and
+                streams only the viewport-relevant slice, which is what lets a 10,000-node graph
+                paint under a second on a regulated bank&apos;s laptop. Click a node to fly the
+                camera in behind it.
               </p>
-              <ForceGraph nodeCount={1000} height={560} />
             </section>
           ) : null}
 

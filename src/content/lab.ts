@@ -10,9 +10,9 @@ export const labDemos: LabDemo[] = [
   {
     slug: 'force-graph-mini',
     eyebrow: 'Force graph',
-    title: '1K-node version of the production D3 graph',
+    title: '3D force-directed universe with click-to-fly viewpoint',
     description:
-      'Canvas, force in a Web Worker, drag, zoom, pan. Same rendering pipeline as the 10K-node banking SaaS graph, on a sanitized dataset.',
+      'd3-force-3d in a Web Worker, Three.js renderer with instanced nodes, additive line edges, and halo billboards on hubs. Ten color-coded clusters, draggable nodes, and a click that flies the camera in behind the selected node. Same pipeline as the production 10K-node banking graph, virtualized from a million rows on S3.',
     meta: 'Live demo',
   },
   {

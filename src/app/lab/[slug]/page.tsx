@@ -61,11 +61,18 @@ export default async function LabDetail({ params }: { params: Promise<{ slug: st
 function ForceGraphSection() {
   return (
     <div className="flex flex-col gap-3">
-      <ForceGraph nodeCount={1000} height={620} />
+      <ForceGraph nodeCount={1000} linkCount={2400} height={640} />
       <p className="text-body text-[var(--color-fg-muted)]">
-        Production version renders 10K nodes against live S3 streams in a regulated banking SaaS.
-        This is a 1K-node sanitized recreation, same rendering pipeline, same force-in-worker
-        architecture.
+        Full 3D force simulation in d3-force-3d running inside a Web Worker. Rendering is
+        Three.js: instanced sphere nodes, additive line edges, additive halo billboards on hubs.
+        The layout starts from a singularity at the origin and explodes outward as the force
+        cools, and color identifies one of ten connected clusters so the universe reads as a
+        galaxy of communities once it settles. 1,000 entities here for a responsive offline demo.
+        In the production banking SaaS this same force-in-worker pipeline backs a 10,000-node
+        graph drawn from a million-row customer dataset on S3, streamed in by viewport slice so
+        first paint stays under a second no matter how large the underlying dataset grows. Drag
+        empty space to orbit, scroll to zoom, drag a node to move it in 3D, click a node to fly
+        the camera in behind it.
       </p>
     </div>
   )

@@ -29,7 +29,7 @@ const FEATURED: CaseStudyTeaser[] = FEATURED_SLUGS.map((slug) => {
 
 const PROOF_LINES = [
   '28-module React 18 migration in 7 days. TTI 7.2s to 2s.',
-  '10K-node D3.js network graph. Live demo below.',
+  '10K-node D3 graph virtualized from a million rows on S3. Click-to-fly 3D viewpoint in the lab.',
   'LLM chat UI with SSE streaming and embedded BI. Ask the assistant.',
 ]
 
@@ -45,7 +45,7 @@ export default function HomePage() {
                 aria-hidden
                 className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]"
               />
-              Pratik Patil — Senior Software Engineer
+              Pratik Patil · Senior Software Engineer
             </p>
             <h1 className="text-hero text-[var(--color-fg)]">
               I build AI product surfaces that pass bank compliance review.
@@ -152,8 +152,8 @@ Assistant:  Pratik architected ChatCDP, an LLM chat surface for brokerage
             <TeaserCard
               href="/lab/force-graph-mini"
               eyebrow="Force graph"
-              title="1K-node version of the production D3 graph"
-              description="Canvas, force in a Web Worker, drag, zoom, pan. Same rendering pipeline as the 10K-node banking SaaS graph."
+              title="3D force universe, click a node to step inside it"
+              description="d3-force-3d in a Web Worker, Three.js renderer, ten color-coded clusters, draggable nodes, and a camera that flies in behind the node you click. The production pipeline, virtualized from S3 in deployment."
             />
             <TeaserCard
               href="/lab/token-streaming-sandbox"
