@@ -1,4 +1,11 @@
-export const SITE_URL = 'https://pratikpatil.dev'
+// Resolve to whatever host is actually serving production traffic so social
+// crawlers (WhatsApp, iMessage, Slack) fetch the OG image from a domain that
+// actually resolves. `VERCEL_PROJECT_PRODUCTION_URL` becomes the custom apex
+// once it's attached on Vercel; until then it's the *.vercel.app fallback.
+const VERCEL_PROD_HOST = process.env.VERCEL_PROJECT_PRODUCTION_URL
+export const SITE_URL = VERCEL_PROD_HOST
+  ? `https://${VERCEL_PROD_HOST}`
+  : 'https://pratikpatil.dev'
 
 export const SITE_NAME = 'Pratik Patil'
 
