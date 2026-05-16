@@ -351,6 +351,16 @@ export function GET(req: Request) {
         </div>
       </div>
     ),
-    { width: 1200, height: 630 },
+    {
+      width: 1200,
+      height: 630,
+      headers: {
+        // One day fresh at the edge, one week stale-while-revalidate. Slow
+        // social crawlers (LinkedIn, Slack) get instant cached responses
+        // instead of paying the ~1.8s cold-start every fetch, which is what
+        // was causing LinkedIn to time out and cache "no preview".
+        'Cache-Control': 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800',
+      },
+    },
   )
 }
